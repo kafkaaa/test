@@ -845,7 +845,7 @@ static uint8_t LoRaMacBuffer[LORAMAC_PHY_MAXPAYLOAD];
  */
 static uint16_t LoRaMacBufferPktLen = 0;
 
-uint8_t typeOfData = dataType_DataUnknow;
+uint8_t LoRaMacFrameType = FRAME_TYPE_PROPRIETARY;
 
 const uint8_t netID = 0x01;
 
@@ -870,7 +870,7 @@ void RxWindowSetup( bool rxContinuous ) {
 		SX1276SetRx();
 }
 
-LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize ) {
+LoRaMacStatus_t PrepareFrame( LoRaMacFrameType_t LoRaMacFrameType, void *fBuffer, uint16_t fBufferSize ) {
 		uint8_t* payload = fBuffer;
 		//~ int i;
 	
@@ -878,11 +878,11 @@ LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t f
 		
 		memset(LoRaMacBuffer, 0, 11);
 		
-		LoRaMacBuffer[LoRaMacBufferPktLen++] = typeOfData;
+		LoRaMacBuffer[LoRaMacBufferPktLen++] = LoRaMacFrameType;
 
-		switch(typeOfData)
+		switch(LoRaMacFrameType)
 		{
-			case dataTypeJoin_Accept:
+			case FRAME_TYPE_JOIN_ACCEPT:
 				{
 						LoRaMacBuffer[LoRaMacBufferPktLen++] =	LoRaMacDevAddr & 0xFF;
 						LoRaMacBuffer[LoRaMacBufferPktLen++] = ( LoRaMacDevAddr >> 8 ) & 0xFF;
@@ -895,7 +895,7 @@ LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t f
 						LoRaMacBufferPktLen = 11;
 				}
 				break;
-			case dataType_DataUnconFirmDown:
+			case FRAME_TYPE_DATA_UNCONFIRMED_DOWN:
 				{
 						LoRaMacBuffer[LoRaMacBufferPktLen++] = LoRaMacDevAddr & 0xFF;
 						LoRaMacBuffer[LoRaMacBufferPktLen++] = ( LoRaMacDevAddr >> 8 ) & 0xFF;
@@ -905,7 +905,7 @@ LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t f
 						LoRaMacBufferPktLen = 11;
 				}
 				break;
-			case dataType_DataConfirmDown:
+			case FRAME_TYPE_DATA_CONFIRMED_DOWN:
 				{
 						LoRaMacBuffer[LoRaMacBufferPktLen++] = payload[0];
 						LoRaMacBuffer[LoRaMacBufferPktLen++] = payload[1];
@@ -929,11 +929,11 @@ LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t f
 		return LORAMAC_STATUS_OK;
 }
 
-LoRaMacStatus_t Send( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize ) {
+LoRaMacStatus_t Send( LoRaMacFrameType_t LoRaMacFrameType, void *fBuffer, uint16_t fBufferSize ) {
 	LoRaMacStatus_t status = LORAMAC_STATUS_PARAMETER_INVALID;
 	
 	// Prepare the frame
-    status = PrepareFrame( typeOfData, fBuffer, fBufferSize );
+    status = PrepareFrame( LoRaMacFrameType, fBuffer, fBufferSize );
 
 	// Validate status
     if( status != LORAMAC_STATUS_OK )
@@ -968,7 +968,7 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 
 		switch(typeOfDataFromeGW)
 		{
-			case dataTypeJoin_Req:
+			case FRAME_TYPE_JOIN_REQ:
 				{
 						LoRaMacDevAddr = payload[pktLen++];
 						LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 8 );
@@ -980,11 +980,11 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 						dtb_checkDevAddr(payload);
 					
 						piLock(SX_SEND_LOCK);
-						Send(dataTypeJoin_Accept, 0, 0);
+						Send(FRAME_TYPE_JOIN_ACCEPT, 0, 0);
 						piUnlock(SX_SEND_LOCK);
 				}
 				break;
-			case dataType_DataConfirmUp:
+			case FRAME_TYPE_DATA_CONFIRMED_UP:
 				{
 						netIDFromGW = payload[4];
 						if(netIDFromGW==netID)
@@ -999,12 +999,12 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 								bf_importToPiBuffer(payload);
 							}
 							piLock(SX_SEND_LOCK);
-							Send(dataType_DataUnconFirmDown, 0, 0);
+							Send(FRAME_TYPE_DATA_UNCONFIRMED_DOWN, 0, 0);
 							piUnlock(SX_SEND_LOCK);							
 						}
 				}
 				break;
-			case dataType_DataUnconFirmUp:
+			case FRAME_TYPE_DATA_UNCONFIRMED_UP:
 				{
 						
 				}
@@ -1018,11 +1018,11 @@ void OnRadioTxDone( void ) {
 		RxWindowSetup(true);
 }
 
-uint8_t getTypeOfData(void) {
-	return typeOfData;
+uint8_t getLoRaMacFrameType(void) {
+	return LoRaMacFrameType;
 }
 
-void setTypeOfData(uint8_t typeOfData_set) {
-	typeOfData = typeOfData_set;
+void setTypeOfData(uint8_t LoRaMacFrameType_set) {
+	LoRaMacFrameType = LoRaMacFrameType_set;
 }
 /** End Of File **/

@@ -182,7 +182,7 @@ void read_socket() {
     if (length < 0){
          error("\nERROR");
 	}
-    else 
+    else
 	{	
 		//~ /* Print Response from Server */
 		//~ int i;

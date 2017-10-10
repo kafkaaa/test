@@ -32,39 +32,28 @@ extern int SX_SEND_LOCK;
 
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE FUNCTIONS DECLARATION ---------------------------------------- */
-/* --- Pi Buffer - For Future --- */
 
-/*
- * @brief insert data function
- */
+/* --- Pi Buffer --- */
+
+/* @brief insert data function */
 void bf_insertToPiBuffer(uint8_t* data);
-/*
- * @brief import packet to Pi Buffer
- */
+
+/* @brief import packet to Pi Buffer */
 void bf_importToPiBuffer(uint8_t* packet);
-/*
- * @brief export packet from Pi Buffer
- */
-void bf_exportTromPiBuffer();
+
+/* @brief export packet from Pi Buffer */
+void bf_exportFromPiBuffer();
 
 /* --- Server Buffer --- */
-/*
- * @brief
- */
+/* @brief */
 void bf_insertToServerBuffer(uint8_t* data);
-/*
- * @brief
- */
+/* @brief */
 void bf_importToServerBuffer(uint8_t* packet);
-/*
- * @brief export packet from Server Buffer
- */
+/* @brief export packet from Server Buffer */
 void bf_exportFromServerBuffer();
 
 /* --- Gateway Functions --- */
-/*
- * @brief interupt function for receiving packet
- */
+/* @brief interupt function for receiving packet */
 void lgw_interupt(void);
 
 #endif

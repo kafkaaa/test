@@ -123,7 +123,7 @@ void bf_exportFromServerBuffer(){
 		//~ printf("\n");
 		
 		piLock(SX_SEND_LOCK);
-		Send(dataType_DataConfirmDown, dataExportedS, 6);
+		Send(FRAME_TYPE_DATA_CONFIRMED_DOWN, dataExportedS, 6);
 		piUnlock(SX_SEND_LOCK);
 		
 		piLock(ServerBuffer_LOCK);

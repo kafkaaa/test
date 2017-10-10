@@ -251,6 +251,8 @@ void dtb_getDevAddr(uint8_t *buff,char *received){
 	char b[1];
 	int i,j;
 	//~ printf("26 %d", received[26]);
+	/* This code is suitable for 0 - 99 devices */
+	/* If more than 9 devices */
 	if(received[25] != 47){
 		local_id_down[0] = received[28];
 		local_id_down[1] = received[29];
@@ -266,6 +268,7 @@ void dtb_getDevAddr(uint8_t *buff,char *received){
 			break;
 		}	
 	}
+	/* If less than 9 devices */
 	else{
 		local_id_down[0] = received[27];
 		printf("Device %s",local_id_down);

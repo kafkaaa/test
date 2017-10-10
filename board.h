@@ -45,7 +45,7 @@
 #endif /* DEBUG */
 
 /* Define parameters for Txconfig */
-#define LORA_RF_FREQUENCY							434175000   // Hz
+#define LORA_RF_FREQUENCY							433175000   // Hz
 #define LORA_TX_OUTPUT_POWER						20		    // dBm
 #define LORA_FDEV									0
 #define LORA_BANDWIDTH                              0           // [0: 125 kHz,

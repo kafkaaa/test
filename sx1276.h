@@ -86,7 +86,7 @@ typedef enum
 typedef struct
 {
     RadioState_t             State;
-		RadioModems_t            Modem;
+		RadioModems_t        Modem;
     uint32_t                 Channel;
     RadioLoRaSettings_t      LoRa;
     RadioLoRaPacketHandler_t LoRaPacketHandler;
@@ -353,16 +353,28 @@ void SX1276SetMaxPayloadLength( uint8_t max );
 /*******************************************************************************/
 /********************************* LORAMAC.h ***********************************/
 /*******************************************************************************/
-typedef enum typeOfData {
-		dataTypeJoin_Req				= 0x00,
-		dataTypeJoin_Accept				= 0x01,
-		dataType_DataUnconFirmUp		= 0x02,
-		dataType_DataUnconFirmDown		= 0x03,
-		dataType_DataConfirmUp			= 0x04,
-		dataType_DataConfirmDown		= 0x05,
-		dataType_FixReceiveMode			= 0x06,
-		dataType_DataUnknow				= 0x07,	
-}typeOfData_t;
+//~ typedef enum typeOfData {
+		//~ dataTypeJoin_Req				= 0x00,
+		//~ dataTypeJoin_Accept				= 0x01,
+		//~ dataType_DataUnconFirmUp		= 0x02,
+		//~ dataType_DataUnconFirmDown		= 0x03,
+		//~ dataType_DataConfirmUp			= 0x04,
+		//~ dataType_DataConfirmDown		= 0x05,
+		//~ dataType_FixReceiveMode			= 0x06,
+		//~ dataType_DataUnknow				= 0x07,	
+//~ }typeOfData_t;
+
+typedef enum eLoRaMacFrameType
+{
+		FRAME_TYPE_JOIN_REQ					= 0x00,
+		FRAME_TYPE_JOIN_ACCEPT				= 0x01,
+		FRAME_TYPE_DATA_UNCONFIRMED_UP		= 0x02,
+		FRAME_TYPE_DATA_UNCONFIRMED_DOWN	= 0x03,
+		FRAME_TYPE_DATA_CONFIRMED_UP		= 0x04,
+		FRAME_TYPE_DATA_CONFIRMED_DOWN		= 0x05,
+		FRAME_TYPE_RFU						= 0x06,
+		FRAME_TYPE_PROPRIETARY				= 0x07,	
+}LoRaMacFrameType_t;
 
 /*!
  * LoRaMAC Status
@@ -416,13 +428,13 @@ typedef enum eLoRaMacStatus {
 
 void LoRaMacInitialization( void );
 void RxWindowSetup( bool rxContinuous );
-LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize );
-LoRaMacStatus_t Send( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize );
+LoRaMacStatus_t PrepareFrame( LoRaMacFrameType_t LoRaMacFrameType, void *fBuffer, uint16_t fBufferSize );
+LoRaMacStatus_t Send( LoRaMacFrameType_t LoRaMacFrameType, void *fBuffer, uint16_t fBufferSize );
 LoRaMacStatus_t SendFrameOnChannel( void );
 void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
 void OnRadioTxDone( void );
-uint8_t getTypeOfData(void);
-void setTypeOfData(uint8_t typeOfData_set);
+uint8_t getLoRaMacFrameType(void);
+void setLoRaMacFrameType(uint8_t LoRaMacFrameType_set);
 
 #endif
 /** End Of File **/

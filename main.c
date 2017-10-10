@@ -15,8 +15,8 @@
 
 /* -------------------------------------------------------------------------- */
 /* --- DEPENDANCIES --------------------------------------------------------- */
-#include "board.h"
 #include "buffer.h"
+#include "board.h"
 #include "database.h"
 #include "mqtt.h"
 #include "sx1276.h"
@@ -68,7 +68,26 @@ int main( void )
 	
 	while(1)
 	{
-
+		/* THREAD 0 - TESTING SWITCH STATUS OF LED  */
+		/* Must turn off LORA_RX_CONTINUOUS mode */
+		
+		//~ uint8_t payload[7];
+		//~ payload[0] = 110;
+		//~ payload[1] = 84;
+		//~ payload[2] = 55;
+		//~ payload[3] = 1;
+		//~ payload[4] = 2;
+		//~ payload[5] = 0;
+		//~ Send(FRAME_TYPE_DATA_CONFIRMED_DOWN, payload, 6);
+		//~ delay(2);
+		//~ payload[0] = 110;
+		//~ payload[1] = 84;
+		//~ payload[2] = 55;
+		//~ payload[3] = 1;
+		//~ payload[4] = 2;
+		//~ payload[5] = 1;
+		//~ Send(FRAME_TYPE_DATA_CONFIRMED_DOWN, payload, 6);
+		//~ delay(2);
 	}
 }
 
