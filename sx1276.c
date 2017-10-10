@@ -789,8 +789,7 @@ void SX1276OnDio0Irq( void ) {
 								}
 								else
 								{
-										SX1276.Settings.LoRaPacketHandler.RssiValue = RSSI_OFFSET_LF + rssi + ( rssi >> 4 ) +
-																																	snr;
+										SX1276.Settings.LoRaPacketHandler.RssiValue = RSSI_OFFSET_LF + rssi + ( rssi >> 4 ) + snr;
 								}
 						}
 						else
@@ -997,7 +996,7 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 							
 							if(dtb_checkDevExist(payload) == 1){
 								/* Import to Pi Buffer */
-								import_toPiBuffer(payload);
+								bf_importToPiBuffer(payload);
 							}
 							piLock(SX_SEND_LOCK);
 							Send(dataType_DataUnconFirmDown, 0, 0);

@@ -20,7 +20,7 @@ OBJ = board.o buffer.o database.o libemqtt.o main.o mqtt.o spi_gpio.o sx1276.o
 DEPS = ./*.h
 
 #Any special libraries you are using in your project (e.g. -lbcm2835 -lrt `pkg-config --libs gtk+-3.0` ), or leave blank
-LIBS = -lwiringPi -lm -lmysqlclient -lrt
+LIBS = -lwiringPi -lm -lmariadbclient -lrt
 
 #Set any compiler flags you want to use (e.g. -I/usr/include/somefolder `pkg-config --cflags gtk+-3.0` ), or leave blank
 CFLAGS = -I/usr/include/mysql

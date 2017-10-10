@@ -43,19 +43,19 @@ int PiBuffer_LOCK, ServerBuffer_LOCK;
 /* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
 
 /* @brief */
-void insert_toPiBuffer(uint8_t* data){
+void bf_insertToPiBuffer(uint8_t* data){
 	for(i=0;i<MAX_PI_PACKET_SIZE;i++){
 		piBuffer[++rearP] = data[i];
 	}
 }
 
 /* @brief */
-void import_toPiBuffer(uint8_t* packet){
+void bf_importToPiBuffer(uint8_t* packet){
 	if(isFullP){
 		rearP = -1;
 		packetCountP = 0;
 	}
-	insert_toPiBuffer(packet);
+	bf_insertToPiBuffer(packet);
 	
 	piLock(PiBuffer_LOCK);
 	packetCountP++;
@@ -66,7 +66,7 @@ void import_toPiBuffer(uint8_t* packet){
 }
 
 /* @brief */
-void export_fromPiBuffer(){
+void bf_exportFromPiBuffer(){
 	if(newPacketP > 0){
 		for(i=0;i<MAX_PI_PACKET_SIZE;i++){
 		dataExportedP[i] = piBuffer[frontP++];
@@ -84,19 +84,19 @@ void export_fromPiBuffer(){
 }
 
 /* @brief */
-void insert_toServerBuffer(uint8_t* data){
+void bf_insertToServerBuffer(uint8_t* data){
 	for(i=0;i<MAX_SERVER_PACKET_SIZE;i++){
 		serverBuffer[++rearS] = data[i];
 	}
 }
 
 /* @brief */
-void import_toServerBuffer(uint8_t* packet){
+void bf_importToServerBuffer(uint8_t* packet){
 	if(isFullS){
 		rearS = -1;
 		packetCountS = 0;
 	}
-	insert_toServerBuffer(packet);
+	bf_insertToServerBuffer(packet);
 	
 	piLock(ServerBuffer_LOCK);
 	packetCountS++;
@@ -107,7 +107,7 @@ void import_toServerBuffer(uint8_t* packet){
 }
 
 /* @brief */
-void export_fromServerBuffer(){
+void bf_exportFromServerBuffer(){
 	if(newPacketS > 0){
 		for(i=0;i<MAX_SERVER_PACKET_SIZE;i++){
 		dataExportedS[i] = serverBuffer[frontS++];
@@ -133,7 +133,7 @@ void export_fromServerBuffer(){
 }
 
 /* @brief */
-void gw_Interupt(void) {
+void lgw_interupt(void) {
 	if(digitalRead(DI0))
 	{
 		SX1276OnDio0Irq();

@@ -37,35 +37,35 @@ extern int SX_SEND_LOCK;
 /*
  * @brief insert data function
  */
-void insert_toPiBuffer(uint8_t* data);
+void bf_insertToPiBuffer(uint8_t* data);
 /*
  * @brief import packet to Pi Buffer
  */
-void import_toPiBuffer(uint8_t* packet);
+void bf_importToPiBuffer(uint8_t* packet);
 /*
  * @brief export packet from Pi Buffer
  */
-void export_fromPiBuffer();
+void bf_exportTromPiBuffer();
 
 /* --- Server Buffer --- */
 /*
  * @brief
  */
-void insert_toServerBuffer(uint8_t* data);
+void bf_insertToServerBuffer(uint8_t* data);
 /*
  * @brief
  */
-void import_toServerBuffer(uint8_t* packet);
+void bf_importToServerBuffer(uint8_t* packet);
 /*
  * @brief export packet from Server Buffer
  */
-void export_fromServerBuffer();
+void bf_exportFromServerBuffer();
 
 /* --- Gateway Functions --- */
 /*
  * @brief interupt function for receiving packet
  */
-void gw_Interupt(void);
+void lgw_interupt(void);
 
 #endif
 /** End Of File **/

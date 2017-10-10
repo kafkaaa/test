@@ -73,7 +73,7 @@ void alive(int sig) {
 		
 	mqtt_ping(&broker);
 	alarm(KEEP_ALIVE);
-	++nb_connect;
+	//~ ++nb_connect;
 	
 	if(nb_connect == 10){
 		piLock(SERVER_LOCK);
@@ -220,13 +220,13 @@ void read_socket() {
 						printf(": TURN OFF\n");
 						printf("-----------\n");
 						buffer[5] = recvbuff[length-1] - '0';
-						import_toServerBuffer(buffer);
+						bf_importToServerBuffer(buffer);
 						break;
 					case 49: 
 						printf(": TURN ON\n"); 
 						printf("-----------\n");
 						buffer[5] = recvbuff[length-1] - '0';		
-						import_toServerBuffer(buffer);			
+						bf_importToServerBuffer(buffer);			
 						break;
 				}
 				break;
