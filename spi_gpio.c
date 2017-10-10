@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* ----------------------------------------------------------------------------
  *
  * Copyright (c) 2017
  * All Rights Reserved
@@ -7,21 +7,27 @@
  *
  * Author: Nguyen Canh Thang
  *
- * Last Changed By:  $Author: Nguyen Canh Thang $
- * Revision:         $Revision: 1.0.0.0 $
+ * Last Changed By:  $Author: Nguyen Canh Thang
+ * Revision:         $Revision: 1.0.0.1 $
  * Last Changed:     $Date:  $
  *
- ******************************************************************************/
- 
-/******************************************************************************/
-/*                              INCLUDE FILES                                 */
-/******************************************************************************/
+ ---------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* --- DEPENDANCIES --------------------------------------------------------- */
 #include "spi_gpio.h"
 
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE CONSTANTS ---------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE VARIABLES ---------------------------------------------------- */
 unsigned char TxBuf[32]="";
 
-void SPI_Init()
-{
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
+/* @brief */
+void SPI_Init() {
 	wiringPiSetupGpio();
 	pinMode(NSS,OUTPUT);
 	pinMode(SCK,OUTPUT);
@@ -33,9 +39,8 @@ void SPI_Init()
 	pullUpDnControl (DI0,PUD_UP);
 }
 
-/****************************************************************************************************/
-uint8_t SPI_RW(uint8_t Buff)
-{
+/* @brief */
+uint8_t SPI_RW(uint8_t Buff) {
 	uint8_t bit_ctr;
    	for(bit_ctr=0;bit_ctr<8;bit_ctr++) // output 8-bit
    	{
@@ -51,9 +56,8 @@ uint8_t SPI_RW(uint8_t Buff)
     return(Buff);           		  // return read uchar
 }
 
-/****************************************************************************************************/
-uint8_t SPI_Read(uint8_t reg)
-{
+/* @brief */
+uint8_t SPI_Read(uint8_t reg) {
 	uint8_t reg_val;
 
 	NSS0;   	            // NSS low, initialize SPI communication...
@@ -64,9 +68,8 @@ uint8_t SPI_Read(uint8_t reg)
 	return(reg_val);        // return register value
 }
 
-/****************************************************************************************************/
-uint8_t SPI_Write(uint8_t reg, uint8_t value)
-{
+/* @brief */
+uint8_t SPI_Write(uint8_t reg, uint8_t value) {
 	uint8_t status;
 
 	NSS0;                   // NSS low, init SPI transaction
@@ -77,9 +80,8 @@ uint8_t SPI_Write(uint8_t reg, uint8_t value)
 	return(status);            // return nRF24L01 status uchar
 }
 
-/****************************************************************************************************/
-void SPI_Read_Buf(uint8_t reg, uint8_t* pBuf, uint8_t uchars)
-{
+/* @brief */
+void SPI_Read_Buf(uint8_t reg, uint8_t* pBuf, uint8_t uchars) {
 	uint8_t uchar_ctr;
 	
 	for(uchar_ctr=0; uchar_ctr<uchars; uchar_ctr++)
@@ -89,9 +91,8 @@ void SPI_Read_Buf(uint8_t reg, uint8_t* pBuf, uint8_t uchars)
 	return;
 }
 
-/*****************************************************************************************************/
-void SPI_Write_Buf(uint8_t reg, uint8_t* pBuf, char uchars)
-{
+/* @brief */
+void SPI_Write_Buf(uint8_t reg, uint8_t* pBuf, char uchars) {
 	uint8_t uchar_ctr;
 	
 	for(uchar_ctr=0; uchar_ctr<uchars; uchar_ctr++)

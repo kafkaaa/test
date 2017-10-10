@@ -1,24 +1,22 @@
-/*******************************************************************************
+/* ----------------------------------------------------------------------------
  *
  * Copyright (c) 2017
- * Lumi, JSC.
  * All Rights Reserved
- *
  *
  * Description:
  *
- * Author: Quang Huy
+ * Author: Nguyen Canh Thang
  *
  * Last Changed By:  $Author: Nguyen Canh Thang
  * Revision:         $Revision: 1.0.0.1 $
  * Last Changed:     $Date:  $
  *
- ******************************************************************************/
+ ---------------------------------------------------------------------------- */
 #ifndef __SX1276_QH_H__
 #define __SX1276_QH_H__
-/******************************************************************************/
-/*                              INCLUDE FILES                                 */
-/******************************************************************************/
+
+/* -------------------------------------------------------------------------- */
+/* --- DEPENDANCIES --------------------------------------------------------- */
 #include "buffer.h"
 #include "mqtt.h"
 #include "macro.h"
@@ -29,6 +27,8 @@
 #include <wiringPi.h>
 #include <stdint.h>
 
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /*!
  * Radio driver internal state machine states definition
  */
@@ -108,6 +108,9 @@ typedef struct SX1276_s
 
 #define RX_BUFFER_SIZE                              256
 
+
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE FUNCTIONS DECLARATION ---------------------------------------- */
 /*!
  * \brief DIO 0 IRQ callback
  */
@@ -350,8 +353,7 @@ void SX1276SetMaxPayloadLength( uint8_t max );
 /*******************************************************************************/
 /********************************* LORAMAC.h ***********************************/
 /*******************************************************************************/
-typedef enum typeOfData
-{
+typedef enum typeOfData {
 		dataTypeJoin_Req				= 0x00,
 		dataTypeJoin_Accept				= 0x01,
 		dataType_DataUnconFirmUp		= 0x02,
@@ -365,8 +367,7 @@ typedef enum typeOfData
 /*!
  * LoRaMAC Status
  */
-typedef enum eLoRaMacStatus
-{
+typedef enum eLoRaMacStatus {
     /*!
      * Service started successfully
      */

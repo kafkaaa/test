@@ -1,20 +1,17 @@
-/******************************************************************************
+/* ----------------------------------------------------------------------------
  *
- * Copyright (c) 2016
- * Lumi, JSC.
+ * Copyright (c) 2017
  * All Rights Reserved
- *
  *
  * Description:
  *
- * Author:	Quang Huy
+ * Author: Nguyen Canh Thang
  *
- * Last Changed By:  $Author:  Nguyen Canh Thang
+ * Last Changed By:  $Author: Nguyen Canh Thang
  * Revision:         $Revision: 1.0.0.1 $
- * Last Changed:     
-								By Huy 		$Date: 2017-2-6 	11:45:00
+ * Last Changed:     $Date:  $
  *
- ******************************************************************************/
+ ---------------------------------------------------------------------------- */
  
 /******************************************************************************/
 /*                              INCLUDE FILES                                 */

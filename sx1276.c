@@ -1,38 +1,40 @@
-/*******************************************************************************
+/* ----------------------------------------------------------------------------
  *
  * Copyright (c) 2017
- * Lumi, JSC.
  * All Rights Reserved
- *
  *
  * Description:
  *
- * Author: Quang Huy
+ * Author: Nguyen Canh Thang
  *
  * Last Changed By:  $Author: Nguyen Canh Thang
  * Revision:         $Revision: 1.0.0.1 $
  * Last Changed:     $Date:  $
  *
- ******************************************************************************/
- 
-/******************************************************************************/
-/*                              INCLUDE FILES                                 */
-/******************************************************************************/
+ ---------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* --- DEPENDANCIES --------------------------------------------------------- */
 #include "sx1276.h"
 
-int SX_SEND_LOCK;
-
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /*!
  * Constant values need to compute the RSSI value
  */
 #define RSSI_OFFSET_LF                              -164
 #define RSSI_OFFSET_HF                              -157
 
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE VARIABLES ---------------------------------------------------- */
+int SX_SEND_LOCK;
+
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
 /*!
  * Radio hardware and global parameters
  */
 SX1276_t SX1276;
-
 
 /*!
  * Reception buffer
@@ -82,8 +84,7 @@ void SX1276SetOpMode( uint8_t opMode );
 
 /*****************************************************************************/
 
-void SX1276Init( void )
-{
+void SX1276Init( void ) {
     SX1276Reset( );
 
     RxChainCalibration();
@@ -93,8 +94,7 @@ void SX1276Init( void )
     //~ SX1276IoIrqInit( );
 }
 
-void SX1276SetChannel( uint32_t freq )
-{
+void SX1276SetChannel( uint32_t freq ) {
     SX1276.Settings.Channel = freq;
     freq = ( uint32_t )( ( double )freq / ( double )FREQ_STEP );
     SX1276Write( REG_FRFMSB, ( uint8_t )( ( freq >> 16 ) & 0xFF ) );
@@ -102,8 +102,7 @@ void SX1276SetChannel( uint32_t freq )
     SX1276Write( REG_FRFLSB, ( uint8_t )( freq & 0xFF ) );
 }
 
-bool SX1276IsChannelFree( uint32_t freq, int16_t rssiThresh )
-{
+bool SX1276IsChannelFree( uint32_t freq, int16_t rssiThresh ) {
     int16_t rssi = 0;
 
     SX1276SetModem( );
@@ -125,8 +124,7 @@ bool SX1276IsChannelFree( uint32_t freq, int16_t rssiThresh )
     return true;
 }
 
-uint32_t SX1276Random( void )
-{
+uint32_t SX1276Random( void ) {
     uint8_t i;
     uint32_t rnd = 0;
 
@@ -160,8 +158,7 @@ uint32_t SX1276Random( void )
     return rnd;
 }
 
-static void RxChainCalibration( void )
-{
+static void RxChainCalibration( void ) {
     uint8_t regPaConfigInitVal;
     uint32_t initialFreq;
 
@@ -200,8 +197,7 @@ void SX1276SetRxConfig(  uint32_t bandwidth,
                          uint16_t symbTimeout, bool fixLen,
                          uint8_t payloadLen,
                          bool crcOn, bool freqHopOn, uint8_t hopPeriod,
-                         bool iqInverted, bool rxContinuous )
-{
+                         bool iqInverted, bool rxContinuous ) {
     SX1276SetModem();
 
 		if( bandwidth > 2 )
@@ -320,8 +316,7 @@ void SX1276SetTxConfig( int8_t power, uint32_t fdev,
                         uint32_t bandwidth, uint32_t datarate,
                         uint8_t coderate, uint16_t preambleLen,
                         bool fixLen, bool crcOn, bool freqHopOn,
-                        uint8_t hopPeriod, bool iqInverted, uint32_t timeout )
-{
+                        uint8_t hopPeriod, bool iqInverted, uint32_t timeout ) {
     uint8_t paConfig = 0;
     uint8_t paDac = 0;
 	
@@ -467,8 +462,7 @@ void SX1276SetTxConfig( int8_t power, uint32_t fdev,
 		}
 }
 
-void SX1276Send( uint8_t *buffer, uint8_t size )
-{
+void SX1276Send( uint8_t *buffer, uint8_t size ) {
 		if( SX1276.Settings.LoRa.IqInverted == true )
 		{
 				SX1276Write( REG_LR_INVERTIQ, ( ( SX1276Read( REG_LR_INVERTIQ ) & RFLR_INVERTIQ_TX_MASK & RFLR_INVERTIQ_RX_MASK ) | RFLR_INVERTIQ_RX_OFF | RFLR_INVERTIQ_TX_ON ) );
@@ -501,20 +495,17 @@ void SX1276Send( uint8_t *buffer, uint8_t size )
 		SX1276SetTx();
 }
 
-void SX1276SetSleep( void )
-{
+void SX1276SetSleep( void ) {
     SX1276SetOpMode( RF_OPMODE_SLEEP );
     SX1276.Settings.State = RF_IDLE;
 }
 
-void SX1276SetStby( void )
-{
+void SX1276SetStby( void ) {
     SX1276SetOpMode( RF_OPMODE_STANDBY );
     SX1276.Settings.State = RF_IDLE;
 }
 
-void SX1276SetRx( void )
-{
+void SX1276SetRx( void ) {
     bool rxContinuous = false;
 
 		if( SX1276.Settings.LoRa.IqInverted == true )
@@ -622,8 +613,7 @@ void SX1276SetRx( void )
 		}
 }
 
-void SX1276SetTx( void )
-{
+void SX1276SetTx( void ) {
 		if( SX1276.Settings.LoRa.FreqHopOn == true )
 		{
 				SX1276Write( REG_LR_IRQFLAGSMASK, RFLR_IRQFLAGS_RXTIMEOUT |
@@ -658,8 +648,7 @@ void SX1276SetTx( void )
     SX1276SetOpMode( RF_OPMODE_TRANSMITTER );
 }
 
-void SX1276StartCad( void )
-{
+void SX1276StartCad( void ) {
 		SX1276Write( REG_LR_IRQFLAGSMASK, RFLR_IRQFLAGS_RXTIMEOUT |
 																RFLR_IRQFLAGS_RXDONE |
 																RFLR_IRQFLAGS_PAYLOADCRCERROR |
@@ -677,8 +666,7 @@ void SX1276StartCad( void )
 		SX1276SetOpMode( RFLR_OPMODE_CAD );
 }
 
-int16_t SX1276ReadRssi( void )
-{
+int16_t SX1276ReadRssi( void ) {
     int16_t rssi = 0;
 	
 		if( SX1276.Settings.Channel > RF_MID_BAND_THRESH )
@@ -693,21 +681,18 @@ int16_t SX1276ReadRssi( void )
     return rssi;
 }
 
-void SX1276Reset( void )
-{
+void SX1276Reset( void ) {
     RESET0;
     delay(1);
     RESET1;
     delay(6);
 }
 
-void SX1276SetOpMode( uint8_t opMode )
-{
+void SX1276SetOpMode( uint8_t opMode ) {
     SX1276Write( REG_OPMODE, ( SX1276Read( REG_OPMODE ) & RF_OPMODE_MASK ) | opMode );
 }
 
-void SX1276SetModem(void)
-{
+void SX1276SetModem(void) {
     assert_param( ( SX1276.Spi.Spi.Instance != NULL ) );
 	
 		if( SX1276.Settings.Modem == MODEM_LORA )
@@ -724,47 +709,39 @@ void SX1276SetModem(void)
 		SX1276Write( REG_DIOMAPPING2, 0x00 );
 }
 
-void SX1276Write( uint8_t addr, uint8_t data )
-{
+void SX1276Write( uint8_t addr, uint8_t data ) {
     SX1276WriteBuffer( addr, &data, 1 );
 }
 
-uint8_t SX1276Read( uint8_t addr )
-{
+uint8_t SX1276Read( uint8_t addr ) {
     uint8_t data;
     SX1276ReadBuffer( addr, &data, 1 );
     return data;
 }
 
-void SX1276WriteBuffer( uint8_t addr, uint8_t *buffer, uint8_t size )
-{
+void SX1276WriteBuffer( uint8_t addr, uint8_t *buffer, uint8_t size ) {
 	SPI_Write_Buf( addr, buffer, size );
 }
 
-void SX1276ReadBuffer( uint8_t addr, uint8_t *buffer, uint8_t size )
-{
+void SX1276ReadBuffer( uint8_t addr, uint8_t *buffer, uint8_t size ) {
 	SPI_Read_Buf( addr, buffer, size );
 }
 
-void SX1276WriteFifo( uint8_t *buffer, uint8_t size )
-{
+void SX1276WriteFifo( uint8_t *buffer, uint8_t size ) {
     SX1276WriteBuffer( 0, buffer, size );
 }
 
-void SX1276ReadFifo( uint8_t *buffer, uint8_t size )
-{
+void SX1276ReadFifo( uint8_t *buffer, uint8_t size ) {
     SX1276ReadBuffer( 0, buffer, size );
 }
 
-void SX1276SetMaxPayloadLength( uint8_t max )
-{
+void SX1276SetMaxPayloadLength( uint8_t max ) {
     SX1276SetModem();
 
     SX1276Write( REG_LR_PAYLOADMAXLENGTH, max );
 }
 
-void SX1276OnDio0Irq( void )
-{
+void SX1276OnDio0Irq( void ) {
 	//~ int i;
 	int16_t rssi;
     volatile uint8_t irqFlags = 0;
@@ -808,8 +785,7 @@ void SX1276OnDio0Irq( void )
 						{
 								if( SX1276.Settings.Channel > RF_MID_BAND_THRESH )
 								{
-										SX1276.Settings.LoRaPacketHandler.RssiValue = RSSI_OFFSET_HF + rssi + ( rssi >> 4 ) +
-																																	snr;
+										SX1276.Settings.LoRaPacketHandler.RssiValue = RSSI_OFFSET_HF + rssi + ( rssi >> 4 ) + snr;
 								}
 								else
 								{
@@ -879,14 +855,12 @@ const uint8_t netID = 0x01;
  */
 static uint32_t LoRaMacDevAddr;
 
-void LoRaMacInitialization( void )
-{
+void LoRaMacInitialization( void ) {
 		SX1276Init();
 		SX1276SetChannel(LORA_RF_FREQUENCY);
 }
 
-void RxWindowSetup( bool rxContinuous )
-{
+void RxWindowSetup( bool rxContinuous ) {
 		SX1276SetRxConfig( LORA_BANDWIDTH, LORA_DATARATE,
 													LORA_CODINGRATE, LORA_BANDWIDTH_AFC,
 													LORA_PREAMBLE_LENGTH, LORA_SYS_TIMEOUT,
@@ -897,8 +871,7 @@ void RxWindowSetup( bool rxContinuous )
 		SX1276SetRx();
 }
 
-LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize )
-{
+LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize ) {
 		uint8_t* payload = fBuffer;
 		//~ int i;
 	
@@ -957,8 +930,7 @@ LoRaMacStatus_t PrepareFrame( typeOfData_t typeOfData, void *fBuffer, uint16_t f
 		return LORAMAC_STATUS_OK;
 }
 
-LoRaMacStatus_t Send( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize )
-{
+LoRaMacStatus_t Send( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSize ) {
 	LoRaMacStatus_t status = LORAMAC_STATUS_PARAMETER_INVALID;
 	
 	// Prepare the frame
@@ -975,8 +947,7 @@ LoRaMacStatus_t Send( typeOfData_t typeOfData, void *fBuffer, uint16_t fBufferSi
 	return status;
 }
 
-LoRaMacStatus_t SendFrameOnChannel( )
-{
+LoRaMacStatus_t SendFrameOnChannel( ) {
 		SX1276SetMaxPayloadLength(LoRaMacBufferPktLen);
 		SX1276SetTxConfig( LORA_TX_OUTPUT_POWER, LORA_FDEV, 
 													LORA_BANDWIDTH, LORA_DATARATE, LORA_CODINGRATE, 
@@ -989,8 +960,7 @@ LoRaMacStatus_t SendFrameOnChannel( )
 		return LORAMAC_STATUS_OK;
 }
 
-void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
-{
+void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) {
 		//~ int i;
 		//~ char *response;
 		uint8_t pktLen = 0;
@@ -1045,18 +1015,15 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
 		} 
 }
 
-void OnRadioTxDone( void )
-{
+void OnRadioTxDone( void ) {
 		RxWindowSetup(true);
 }
 
-uint8_t getTypeOfData(void)
-{
+uint8_t getTypeOfData(void) {
 	return typeOfData;
 }
 
-void setTypeOfData(uint8_t typeOfData_set)
-{
+void setTypeOfData(uint8_t typeOfData_set) {
 	typeOfData = typeOfData_set;
 }
 /** End Of File **/

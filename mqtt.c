@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* ----------------------------------------------------------------------------
  *
  * Copyright (c) 2017
  * All Rights Reserved
@@ -7,36 +7,39 @@
  *
  * Author: Nguyen Canh Thang
  *
- * Last Changed By:  $Author: Nguyen Canh Thang $
- * Revision:         $Revision: 1.0.0.0 $
+ * Last Changed By:  $Author: Nguyen Canh Thang
+ * Revision:         $Revision: 1.0.0.1 $
  * Last Changed:     $Date:  $
  *
- ******************************************************************************/
- 
-/******************************************************************************/
-/*                              INCLUDE FILES                                 */
-/******************************************************************************/
+ ---------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* --- DEPENDANCIES --------------------------------------------------------- */
 #include "mqtt.h"
 
-/** MQTT client id */
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE CONSTANTS ---------------------------------------------------- */
+/* MQTT client id */
 #define		CLIENT_ID			"LoRaGateway"
-/** MQTT server's hostname */
+/* MQTT server's hostname */
 #define		SERVER_HOSTNAME		"things.ubidots.com"
-/** MQTT broker address */
+/* MQTT broker address */
 #define		SERVER_ADDRESS 		"50.23.124.68"
-/** MQTT broker port */
+/* MQTT broker port */
 #define    	SERVER_PORT			1883
-/** MQTT client name */
+/* MQTT client name */
 #define 	USER_NAME			"YVCieTDfqTvkKJVOLQrpvzYvi3s1D7"
-/** MQTT password */
+/* MQTT password */
 #define 	PASSWORD			""
-/** KEEP_ALIVE Time */
+/* KEEP_ALIVE Time */
 #define 	KEEP_ALIVE			30
-/** MAX_PACKET_SIZE */
+/* MAX_PACKET_SIZE */
 #define 	MAX_PACKET_SIZE		500
+
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* Connection to Database */
 MYSQL *connection;
-/* Variables */
 char recvbuff[MAX_PACKET_SIZE];
 char SUBCRIBE_TOPIC[MAX_PACKET_SIZE];// "/v1.6/devices/Device/D1Led/lv"
 char PUBLISH_TOPIC[MAX_PACKET_SIZE]; // "/v1.6/devices/Device1"
@@ -50,28 +53,19 @@ int pingnb = 1;
 int nb_connect = 0;
 int SERVER_LOCK;
 
-/**********************************************************
-**Name:     alive
-**Function: send PINGREQ to server
-**Input:    
-**Output:   
-**********************************************************/
-int catch_signal(int sig,void (*handler) (int))
-{
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
+/* @brief send PINGREQ to server */
+int catch_signal(int sig,void (*handler) (int)) {
 	struct sigaction action;
 	action.sa_handler = handler;
 	sigemptyset(&action.sa_mask);
 	action.sa_flags = 0;
 	return sigaction(sig, &action, NULL);
 }
-/**********************************************************
-**Name:     alive
-**Function: send PINGREQ to server
-**Input:    
-**Output:   
-**********************************************************/
-void alive(int sig)
-{
+
+/* @brief */
+void alive(int sig) {
 	printf("Timeout! Sending ping...\n");
 	printf("-----------\n");
 	printf("Ping nb: %d\n",pingnb++);
@@ -108,14 +102,8 @@ void alive(int sig)
 	}
 }
 
-/**********************************************************
-**Name:     term
-**Function: catch signal to kill process
-**Input:    
-**Output:   
-**********************************************************/
-void term(int sig)
-{
+/* @brief */
+void term(int sig) {
 	/* >>>>> DISCONNECT */
 	mqtt_disconnect(&broker);
 	close_socket(&broker);
@@ -123,38 +111,21 @@ void term(int sig)
 	printf("Disconnected from Server!\n");
 	exit(0);
 }
-/**********************************************************
-**Name:     error
-**Function: catch signal to kill process
-**Input:    
-**Output:   
-**********************************************************/
-void error(char* msg)
-{
+
+/* @brief */
+void error(char* msg) {
 	printf("%s: %s\n",msg,strerror(errno));
 	exit(1);
 }
 
-/**********************************************************
-**Name:     send_packet
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
-int send_packet(void* socket_info, const void* buf, unsigned int count)
-{
+/* @brief */
+int send_packet(void* socket_info, const void* buf, unsigned int count) {
 	int fd = *((int*)socket_info);
 	return send(fd, buf, count, 0);
 }
 
-/**********************************************************
-**Name:     init_socket
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
-void init_socket(mqtt_broker_handle_t* broker, const char* hostname, short port, int keepalive)
-{
+/* @brief */
+void init_socket(mqtt_broker_handle_t* broker, const char* hostname, short port, int keepalive) {
 	int flag = 1;
 
 	/* Create the socket */
@@ -197,26 +168,14 @@ void init_socket(mqtt_broker_handle_t* broker, const char* hostname, short port,
 	memset(recvbuff, 0, MAX_PACKET_SIZE);
 }
 
-/**********************************************************
-**Name:     close_socket
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
-int close_socket(mqtt_broker_handle_t* broker)
-{
+/* @brief */
+int close_socket(mqtt_broker_handle_t* broker) {
 	int fd = *((int*)broker->socket_info);
 	return close(fd);
 }
 
-/**********************************************************
-**Name:     read_socket
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
-void read_socket()
-{
+/* @brief */
+void read_socket() {
 	int length = 0;
 	/* listen to Server */
 	length = read(socket_id,recvbuff, MAX_PACKET_SIZE);
@@ -284,12 +243,7 @@ void read_socket()
 	}
 }
 
-/**********************************************************
-**Name:     mqtt_publish
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void mqtt_publish(uint8_t* node_data){
 	int i;
 	char* response;
@@ -369,12 +323,7 @@ void mqtt_publish(uint8_t* node_data){
 	piUnlock(SERVER_LOCK);
 }
 
-/**********************************************************
-**Name:     mqtt_init_all
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void mqtt_init_all(){
 	/* Init */
 	mqtt_init(&broker, CLIENT_ID);
@@ -394,12 +343,7 @@ void mqtt_init_all(){
 	catch_signal(SIGINT, term);		//Set SIGTERM to term()
 }
 
-/**********************************************************
-**Name:     mqtt_makeNewDevice
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void mqtt_makeNewDevice(char *id){
 	/* Make PUBLISH_TOPIC */
 	strcpy(PUBLISH_TOPIC,"/v1.6/devices/Device");
@@ -421,12 +365,7 @@ void mqtt_makeNewDevice(char *id){
 	piUnlock(SERVER_LOCK);
 }
 
-/**********************************************************
-**Name:     mqtt_subscribeToDevice
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void mqtt_subscribeToDevice(char *id){
 	piLock(SERVER_LOCK);
 	

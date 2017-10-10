@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* ----------------------------------------------------------------------------
  *
  * Copyright (c) 2017
  * All Rights Reserved
@@ -7,51 +7,45 @@
  *
  * Author: Nguyen Canh Thang
  *
- * Last Changed By:  $Author: Nguyen Canh Thang $
- * Revision:         $Revision: 1.0.0.0 $
+ * Last Changed By:  $Author: Nguyen Canh Thang
+ * Revision:         $Revision: 1.0.0.1 $
  * Last Changed:     $Date:  $
  *
- ******************************************************************************/
- 
-/******************************************************************************/
-/*                              INCLUDE FILES                                 */
-/******************************************************************************/
+ ---------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* --- DEPENDANCIES --------------------------------------------------------- */
 #include "database.h"
 
-/** LOCALHOST */
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE CONSTANTS ---------------------------------------------------- */
+/* LOCALHOST */
 #define    	LOCALHOST	"localhost"
-/** MYSQL_USERNAME */
+/* MYSQL_USERNAME */
 #define		MYSQL_USERNAME	"root"
-/** MYSQL_PASSWORD */
+/* MYSQL_PASSWORD */
 #define		MYSQL_PASSWORD 	"canhthang"
-/** DATABASE_NAME */
+/* DATABASE_NAME */
 #define    	DATABASE_NAME	"gateway"
-/** TABLE_NAME */
+/* TABLE_NAME */
 #define    	TABLE_NAME		"device"
 
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE VARIABLES ---------------------------------------------------- */
 char query[200];
 char local_id_up[2];
 char local_id_down[2];
 
-/**********************************************************
-**Name:     finish_with_error
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
-void finish_with_error()
-{
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
+/* @brief */
+void finish_with_error() {
 	fprintf(stderr, "%s\n", mysql_error(connection));
 	mysql_close(connection);
 	//~ exit(1);        
 }
 
-/**********************************************************
-**Name:     dtb_init
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_init(){
 	/* Database */
 	connection = mysql_init(NULL);
@@ -68,12 +62,7 @@ void dtb_init(){
 	dtb_checkJoinedDevice();
 }
 
-/**********************************************************
-**Name:     dtb_query
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_query(char* query){
 	if (mysql_query(connection, query)) //0 is success
 	{
@@ -81,12 +70,7 @@ void dtb_query(char* query){
 	}
 }
 
-/**********************************************************
-**Name:     dtb_showResponse
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_showResponse(){
 	MYSQL_RES *result = mysql_store_result(connection);
 	int i;
@@ -111,12 +95,7 @@ void dtb_showResponse(){
 	mysql_free_result(result);
 }
 
-/**********************************************************
-**Name:     dtb_getResponse
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 char* dtb_getResponse(){
 	char *response;
 	MYSQL_RES *result = mysql_store_result(connection);
@@ -136,12 +115,7 @@ char* dtb_getResponse(){
 	mysql_free_result(result);
 }
 
-/**********************************************************
-**Name:     dtb_checkDevAddr
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_checkDevAddr(uint8_t *packet){
 	char* response;
 	char b1[1],b2[1],b3[1];
@@ -229,12 +203,8 @@ void dtb_checkDevAddr(uint8_t *packet){
 		}
 	}
 }
-/**********************************************************
-**Name:     dtb_checkDevExist
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+
+/* @brief */
 int dtb_checkDevExist(uint8_t *packet){
 	char* response;
 	char b1[1],b2[1],b3[1];
@@ -264,12 +234,7 @@ int dtb_checkDevExist(uint8_t *packet){
 	}
 }
 
-/**********************************************************
-**Name:     dtb_getHighestID
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 char* dtb_getHighestID(){
 	char *response;
 	strcpy(query,"select id from device order by id desc limit 1;");
@@ -280,12 +245,7 @@ char* dtb_getHighestID(){
 	return response;
 }
 
-/**********************************************************
-**Name:     dtb_getDevAddr
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_getDevAddr(uint8_t *buff,char *received){
 	char *response;
 	char b[1];
@@ -337,12 +297,7 @@ void dtb_getDevAddr(uint8_t *buff,char *received){
 	}
 }
 
-/**********************************************************
-**Name:     dtb_getDevID
-**Function: 
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 char* dtb_getDevID(uint8_t *packet){
 	//~ int id;
 	char *response;
@@ -369,22 +324,12 @@ char* dtb_getDevID(uint8_t *packet){
 	//~ return id;
 }
 
-/**********************************************************
-**Name:     dtb_checkDevStatus
-**Function: check device's status to subcribe to control device on server
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_checkDevStatus(){
 	
 }
 
-/**********************************************************
-**Name:     dtb_checkJoinedDevice
-**Function: check device's status to subcribe to control device on server
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_checkJoinedDevice(){
 	char *response;
 	int i,nb_device;
@@ -415,12 +360,7 @@ void dtb_checkJoinedDevice(){
 	}
 }
 
-/**********************************************************
-**Name:     dtb_updateStatus
-**Function: change the status of device in LoRaWAN
-**Input:    
-**Output:   
-**********************************************************/
+/* @brief */
 void dtb_updateStatus(char* id,int status){
 	char state[1];
 	sprintf(state,"%d",status);
