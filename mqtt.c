@@ -28,7 +28,7 @@
 /* MQTT broker port */
 #define    	SERVER_PORT			1883
 /* MQTT client name */
-#define 	USER_NAME			"YVCieTDfqTvkKJVOLQrpvzYvi3s1D7"
+#define 	USER_NAME			"vjioaDOjYPv78qNu9LvMn6nAUzr1xq"
 /* MQTT password */
 #define 	PASSWORD			""
 /* KEEP_ALIVE Time */
@@ -377,7 +377,7 @@ void mqtt_subscribeToDevice(char *id){
 	strcat(SUBCRIBE_TOPIC,"/D");
 	strcat(SUBCRIBE_TOPIC,id);
 	strcat(SUBCRIBE_TOPIC,"Led/lv");
-	//~ printf("su:%s\n",SUBCRIBE_TOPIC);
+	printf("su:%s\n",SUBCRIBE_TOPIC);
 	mqtt_subscribe(&broker, SUBCRIBE_TOPIC, 0);
 	
 	/* Delay */

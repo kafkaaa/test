@@ -353,17 +353,6 @@ void SX1276SetMaxPayloadLength( uint8_t max );
 /*******************************************************************************/
 /********************************* LORAMAC.h ***********************************/
 /*******************************************************************************/
-//~ typedef enum typeOfData {
-		//~ dataTypeJoin_Req				= 0x00,
-		//~ dataTypeJoin_Accept				= 0x01,
-		//~ dataType_DataUnconFirmUp		= 0x02,
-		//~ dataType_DataUnconFirmDown		= 0x03,
-		//~ dataType_DataConfirmUp			= 0x04,
-		//~ dataType_DataConfirmDown		= 0x05,
-		//~ dataType_FixReceiveMode			= 0x06,
-		//~ dataType_DataUnknow				= 0x07,	
-//~ }typeOfData_t;
-
 typedef enum eLoRaMacFrameType
 {
 		FRAME_TYPE_JOIN_REQ					= 0x00,

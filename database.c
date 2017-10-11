@@ -130,6 +130,7 @@ void dtb_checkDevAddr(uint8_t *packet){
 	strcat(query,") and (b3 = ");
 	strcat(query,b3);
 	strcat(query,");");
+	
 	//~ printf("%s\n",query);
 	
 	/* Run Query */
@@ -177,26 +178,27 @@ void dtb_checkDevAddr(uint8_t *packet){
 		/* Insert DevAddr into database */
 		strcpy(query,"insert into device (id, b1, b2, b3, b4,type,status) values (");
 		strcat(query,local_id_up);
-		strcat(query,", ");
+		strcat(query,",");
 		strcat(query,b1);
-		strcat(query,", ");
+		strcat(query,",");
 		strcat(query,b2);
-		strcat(query,", ");
+		strcat(query,",");
 		strcat(query,b3);
-		strcat(query,", 1,");
+		strcat(query,",1,");
 
 		switch(packet[5]){							
 			case 1:
-				strcat(query," 1,1);");
+				strcat(query,"1,1);");
 				//~ printf("%s\n",query);
 				dtb_query(query);
 				break;
 			case 2: 
-				strcat(query,", 2,1);");
+				strcat(query,"2,1);");
 				//~ printf("%s\n",query);
 				dtb_query(query);
 				/* Make device and variables on Server */
 				mqtt_makeNewDevice(local_id_up);
+				delay(1);
 				/* Subcribe to new control device */
 				mqtt_subscribeToDevice(local_id_up);
 				break;
