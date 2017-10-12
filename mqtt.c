@@ -48,10 +48,13 @@ mqtt_broker_handle_t broker;
 int socket_id;
 char node_id[1], temp[1], humid[2], light[2], battery[1];
 uint8_t buffer[6];
-int msgnb = 1;
-int pingnb = 1;
-int nb_connect = 0;
 int SERVER_LOCK;
+/* Measurement of TX and MQTT Parameters */
+uint32_t meas_nb_mqtt_tx_ok = 0;
+uint32_t meas_nb_mqtt_ping = 0;
+uint32_t meas_nb_mqtt_connect = 0;
+extern uint32_t meas_nb_tx_ok;
+extern uint32_t meas_nb_rx_ok;
 
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
@@ -66,40 +69,43 @@ int catch_signal(int sig,void (*handler) (int)) {
 
 /* @brief */
 void alive(int sig) {
-	printf("Timeout! Sending ping...\n");
-	printf("-----------\n");
-	printf("Ping nb: %d\n",pingnb++);
-	printf("-----------\n");
-		
-	mqtt_ping(&broker);
-	alarm(KEEP_ALIVE);
-	//~ ++nb_connect;
+	if(WIFI_STATUS == true){
+		printf("Timeout! Sending ping...\n");
+		printf("-----------\n");
+		meas_nb_mqtt_ping++;
+			
+		mqtt_ping(&broker);
+		//~ ++meas_nb_mqtt_connect;
 	
-	if(nb_connect == 10){
-		piLock(SERVER_LOCK);
-							
-		printf("Disconnect to Server!\n");
-		printf("-----------\n");
-		/* DISCONNECT */
-		mqtt_disconnect(&broker);
-		close_socket(&broker);
-		
-		/* >>>>> RECONNECT */
-		printf("Reconnect to Server!\n");
-		printf("-----------\n");
-		//~ /* Init */
-		mqtt_init(&broker, CLIENT_ID);
-		mqtt_init_auth(&broker, USER_NAME, PASSWORD);
-		init_socket(&broker, SERVER_ADDRESS, SERVER_PORT, KEEP_ALIVE);
+		if(meas_nb_mqtt_connect == 10){
+			piLock(SERVER_LOCK);
+								
+			printf("Disconnect to Server!\n");
+			printf("-----------\n");
+			/* DISCONNECT */
+			mqtt_disconnect(&broker);
+			close_socket(&broker);
+			
+			/* >>>>> RECONNECT */
+			printf("Reconnect to Server!\n");
+			printf("-----------\n");
+			//~ /* Init */
+			mqtt_init(&broker, CLIENT_ID);
+			mqtt_init_auth(&broker, USER_NAME, PASSWORD);
+			init_socket(&broker, SERVER_ADDRESS, SERVER_PORT, KEEP_ALIVE);
 
-		/* >>>>> CONNECT */
-		if((mqtt_connect(&broker)) < 0){
-			error("Cannot connect to server!");
+			/* >>>>> CONNECT */
+			if((mqtt_connect(&broker)) < 0){
+				error("Cannot connect to server!");
+			}
+			
+			piUnlock(SERVER_LOCK);	
+			meas_nb_mqtt_connect = 0;
 		}
-		
-		piUnlock(SERVER_LOCK);	
-		nb_connect = 0;
 	}
+	
+	alarm(KEEP_ALIVE);
+	
 }
 
 /* @brief */
@@ -109,6 +115,8 @@ void term(int sig) {
 	close_socket(&broker);
 	printf("\n");
 	printf("Disconnected from Server!\n");
+	printf("INFO: nb_tx_ok: %u, nb_rx_ok: %u \n", meas_nb_tx_ok, meas_nb_rx_ok);
+	printf("INFO: nb_mqtt_tx_ok: %u, nb_mqtt_ping: %u, nb_mqtt_connect: %u\n", meas_nb_mqtt_tx_ok, meas_nb_mqtt_ping, meas_nb_mqtt_connect);
 	exit(0);
 }
 
@@ -214,7 +222,7 @@ void read_socket() {
 				break;
 				
 			case MQTT_MSG_SUBACK_VALUE:
-				dtb_getDevAddr(buffer,recvbuff);
+				db_getDevAddr(buffer,recvbuff);
 				switch(recvbuff[length-1]){
 					case 48: 
 						printf(": TURN OFF\n");
@@ -247,7 +255,7 @@ void read_socket() {
 void mqtt_publish(uint8_t* node_data){
 	int i;
 	char* response;
-	response = dtb_getDevID(node_data);
+	response = db_getDevID(node_data);
 							
 	printf("Device %s Sent To Server: ",response);
 	for(i=0;i<11;i++){
@@ -255,8 +263,7 @@ void mqtt_publish(uint8_t* node_data){
 	}
 	printf("\n");
 	printf("-----------\n");
-	printf("msgnb: %d\n",msgnb++);
-	printf("-----------\n");
+	meas_nb_mqtt_tx_ok++;
 	
 	//NodeID
 	sprintf(node_id,"%s",response);
@@ -317,10 +324,13 @@ void mqtt_publish(uint8_t* node_data){
 	strcat(sendbuff,"}");
 	//~ printf("%s\n %s\n",PUBLISH_TOPIC,sendbuff);
 	
-	piLock(SERVER_LOCK);
-	/* >>>>> PUBLISH */
-	mqtt_publish_with_qos(&broker, PUBLISH_TOPIC, sendbuff, 1, 0);
-	piUnlock(SERVER_LOCK);
+	if(WIFI_STATUS == true){
+		piLock(SERVER_LOCK);
+		/* >>>>> PUBLISH */
+		mqtt_publish_with_qos(&broker, PUBLISH_TOPIC, sendbuff, 1, 0);
+		piUnlock(SERVER_LOCK);
+	}
+	
 }
 
 /* @brief */

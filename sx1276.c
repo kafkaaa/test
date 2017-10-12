@@ -28,7 +28,8 @@
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 int SX_SEND_LOCK;
-
+uint32_t meas_nb_tx_ok = 0;
+uint32_t meas_nb_rx_ok = 0;
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
 /*!
@@ -943,6 +944,7 @@ LoRaMacStatus_t Send( LoRaMacFrameType_t LoRaMacFrameType, void *fBuffer, uint16
 
 	status = SendFrameOnChannel();
 
+	meas_nb_tx_ok++;
 	return status;
 }
 
@@ -977,7 +979,7 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 						printf("Device %d %d %d %d send Join Request!\n",payload[1],payload[2],payload[3],payload[4]);
 						printf("-----------\n");
 						
-						dtb_checkDevAddr(payload);
+						db_checkDevAddr(payload);
 					
 						piLock(SX_SEND_LOCK);
 						Send(FRAME_TYPE_JOIN_ACCEPT, 0, 0);
@@ -994,7 +996,7 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 							LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 16 );
 							LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 24 );	
 							
-							if(dtb_checkDevExist(payload) == 1){
+							if(db_checkDevExist(payload) == 1){
 								/* Import to Pi Buffer */
 								bf_importToPiBuffer(payload);
 							}
@@ -1011,7 +1013,8 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 				break;
 			default:
 				break;
-		} 
+		}
+		meas_nb_rx_ok++;
 }
 
 void OnRadioTxDone( void ) {

@@ -21,10 +21,10 @@ DEPS = ./*.h
 
 #Any special libraries you are using in your project (e.g. -lbcm2835 -lrt `pkg-config --libs gtk+-3.0` ), or leave blank
 #For Raspberry Pi
-LIBS = -lwiringPi -lm -lmariadbclient -lrt
+#LIBS = -lwiringPi -lm -lmariadbclient -lrt
 
 #For Ubuntu
-#LIBS = -lwiringPi -lm -lmysqlclient -lrt -lcrypt
+LIBS = -lwiringPi -lm -lmysqlclient -lrt -lcrypt
 
 #Set any compiler flags you want to use (e.g. -I/usr/include/somefolder `pkg-config --cflags gtk+-3.0` ), or leave blank
 CFLAGS = -I/usr/include/mysql

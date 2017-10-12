@@ -58,7 +58,7 @@ int main( void )
 	mqtt_init_all();
 	
 	/* Init Database */
-	dtb_init();
+	db_init();
 	
 	/* Init Thread */
 	createThread();
@@ -124,14 +124,16 @@ PI_THREAD (thread_sendToNode){
 /* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
 void createThread(){
     int i;
+    
     i = piThreadCreate (thread_sendToServer);
     if(i != 0) printf("thread_sendToServer did not start!");
 
-    i = piThreadCreate (thread_listenToServer);
-    if(i != 0) printf("thread_listenToServer did not start!");
-
-    i = piThreadCreate (thread_sendToNode);
-    if(i != 0) printf("thread_sendToNode did not start!");
+	if(WIFI_STATUS == true){
+		i = piThreadCreate (thread_listenToServer);
+		if(i != 0) printf("thread_listenToServer did not start!");
+		
+		i = piThreadCreate (thread_sendToNode);
+		if(i != 0) printf("thread_sendToNode did not start!");
+	}
 }
-
 /** End Of File **/

@@ -17,8 +17,9 @@
 
 /* -------------------------------------------------------------------------- */
 /* --- DEPENDANCIES --------------------------------------------------------- */
-#include "buffer.h"
 #include "mqtt.h"
+#include "board.h"
+#include "buffer.h"
 #include "macro.h"
 #include "sx1276Regs-Fsk.h"
 #include "sx1276Regs-LoRa.h"

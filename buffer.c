@@ -18,7 +18,8 @@
 #include "buffer.h"
 
 /* -------------------------------------------------------------------------- */
-/* --- PRIVATE CONSTANTS ---------------------------------------------------- */
+/* --- PRIVATE CONSTANTS AND VARIABLES -------------------------------------- */
+
 /* Define for Pi Buffer */
 #define MAX_PI_BUFFER_SIZE 55
 #define MAX_PI_PACKET_SIZE 11
@@ -35,7 +36,8 @@ uint8_t serverBuffer[MAX_SERVER_BUFFER_SIZE];
 uint8_t dataExportedS[MAX_SERVER_PACKET_SIZE];
 int frontS = 0,rearS = -1, packetCountS = 0, newPacketS = 0;
 
-/* General Variables */
+/* --- Thread Lock for sending packet --- */
+extern int SX_SEND_LOCK;
 int i;
 int PiBuffer_LOCK, ServerBuffer_LOCK;
 

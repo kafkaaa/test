@@ -46,7 +46,7 @@ void finish_with_error() {
 }
 
 /* @brief */
-void dtb_init(){
+void db_init(){
 	/* Database */
 	connection = mysql_init(NULL);
 	if (connection == NULL)
@@ -59,11 +59,11 @@ void dtb_init(){
 	{
 		finish_with_error(connection);
 	}
-	dtb_checkJoinedDevice();
+	db_checkJoinedDevice();
 }
 
 /* @brief */
-void dtb_query(char* query){
+void db_query(char* query){
 	if (mysql_query(connection, query)) //0 is success
 	{
 		finish_with_error(connection);
@@ -71,7 +71,7 @@ void dtb_query(char* query){
 }
 
 /* @brief */
-void dtb_showResponse(){
+void db_showResponse(){
 	MYSQL_RES *result = mysql_store_result(connection);
 	int i;
 	if (result == NULL) 
@@ -96,7 +96,7 @@ void dtb_showResponse(){
 }
 
 /* @brief */
-char* dtb_getResponse(){
+char* db_getResponse(){
 	char *response;
 	MYSQL_RES *result = mysql_store_result(connection);
 	  
@@ -116,7 +116,7 @@ char* dtb_getResponse(){
 }
 
 /* @brief */
-void dtb_checkDevAddr(uint8_t *packet){
+void db_checkDevAddr(uint8_t *packet){
 	char* response;
 	char b1[1],b2[1],b3[1];
 	sprintf(b1,"%d",packet[2]);
@@ -134,9 +134,9 @@ void dtb_checkDevAddr(uint8_t *packet){
 	//~ printf("%s\n",query);
 	
 	/* Run Query */
-	dtb_query(query);
+	db_query(query);
 	/* Get Response */
-	response = dtb_getResponse();
+	response = db_getResponse();
 	
 	/* If device exist */
 	if(strcmp(response,"1") == 0){
@@ -150,28 +150,30 @@ void dtb_checkDevAddr(uint8_t *packet){
 		//~ printf("%s\n",query);	
 		
 		/* Run Query */
-		dtb_query(query);
+		db_query(query);
 		/* Get Response */
-		response = dtb_getResponse();
+		response = db_getResponse();
 		sprintf(local_id_up,"%s",response);
 		printf("Device is available with id = %s\n",local_id_up);
 		printf("-----------\n");
-		dtb_updateStatus(local_id_up,1);
+		db_updateStatus(local_id_up,1);
 
 		switch(packet[5]){							
 			case 1:
 				break;
 			case 2: 
-				/* Subcribe to control device */
-				mqtt_subscribeToDevice(local_id_up);
-				break;
+				if(WIFI_STATUS == true){
+					/* Subcribe to control device */
+					mqtt_subscribeToDevice(local_id_up);
+					break;
+				}
 		}
 	}	
 	/* If device does not exist */					
 	else {
 		//Assign new id for device
 		int newid;
-		response = dtb_getHighestID();
+		response = db_getHighestID();
 		newid = response[0] - '0';
 		sprintf(local_id_up,"%d",newid + 1);
 
@@ -190,24 +192,26 @@ void dtb_checkDevAddr(uint8_t *packet){
 			case 1:
 				strcat(query,"1,1);");
 				//~ printf("%s\n",query);
-				dtb_query(query);
+				db_query(query);
 				break;
 			case 2: 
 				strcat(query,"2,1);");
 				//~ printf("%s\n",query);
-				dtb_query(query);
-				/* Make device and variables on Server */
-				mqtt_makeNewDevice(local_id_up);
-				delay(1);
-				/* Subcribe to new control device */
-				mqtt_subscribeToDevice(local_id_up);
+				db_query(query);
+				if(WIFI_STATUS == true){
+					/* Make device and variables on Server */
+					mqtt_makeNewDevice(local_id_up);
+					delay(1);
+					/* Subcribe to new control device */
+					mqtt_subscribeToDevice(local_id_up);
+				}
 				break;
 		}
 	}
 }
 
 /* @brief */
-int dtb_checkDevExist(uint8_t *packet){
+int db_checkDevExist(uint8_t *packet){
 	char* response;
 	char b1[1],b2[1],b3[1];
 	sprintf(b1,"%d",packet[1]);
@@ -224,9 +228,9 @@ int dtb_checkDevExist(uint8_t *packet){
 	//~ printf("%s\n",query);
 	
 	/* Run Query */
-	dtb_query(query);
+	db_query(query);
 	/* Get Response */
-	response = dtb_getResponse();
+	response = db_getResponse();
 	
 	if(strcmp(response,"1") == 0){
 		return 1;
@@ -237,18 +241,18 @@ int dtb_checkDevExist(uint8_t *packet){
 }
 
 /* @brief */
-char* dtb_getHighestID(){
+char* db_getHighestID(){
 	char *response;
 	strcpy(query,"select id from device order by id desc limit 1;");
 	/* Run Query */
-	dtb_query(query);
+	db_query(query);
 	/* Get Response */
-	response = dtb_getResponse();
+	response = db_getResponse();
 	return response;
 }
 
 /* @brief */
-void dtb_getDevAddr(uint8_t *buff,char *received){
+void db_getDevAddr(uint8_t *buff,char *received){
 	char *response;
 	char b[1];
 	int i,j;
@@ -294,16 +298,16 @@ void dtb_getDevAddr(uint8_t *buff,char *received){
 		//~ printf("%s\n",query);
 		
 		/* Run Query */
-		dtb_query(query);
+		db_query(query);
 		/* Get Response */
-		response = dtb_getResponse(connection);
+		response = db_getResponse(connection);
 		sscanf(response,"%d",&j);
 		buff[i-1] = j;
 	}
 }
 
 /* @brief */
-char* dtb_getDevID(uint8_t *packet){
+char* db_getDevID(uint8_t *packet){
 	//~ int id;
 	char *response;
 	char b1[1],b2[1],b3[1];
@@ -321,30 +325,25 @@ char* dtb_getDevID(uint8_t *packet){
 	//~ printf("%s\n",query);
 	
 	/* Run Query */
-	dtb_query(query);
+	db_query(query);
 	/* Get Response */
-	response = dtb_getResponse(connection);
+	response = db_getResponse(connection);
 	return response;
 	//~ sscanf(response,"%d",&id);
 	//~ return id;
 }
 
 /* @brief */
-void dtb_checkDevStatus(){
-	
-}
-
-/* @brief */
-void dtb_checkJoinedDevice(){
+void db_checkJoinedDevice(){
 	char *response;
 	int i,nb_device;
 	
 	/* Get number of device in database */
 	strcpy(query,"select count(*) from device;");
 	/* Run Query */
-	dtb_query(query);
+	db_query(query);
 	/* Get Response */
-	response = dtb_getResponse(connection);
+	response = db_getResponse(connection);
 	sscanf(response,"%d",&nb_device);
 	
 	/* Subcribe to control device if status = 1 */
@@ -354,19 +353,37 @@ void dtb_checkJoinedDevice(){
 		strcat(query,local_id_up);
 		strcat(query," and type = 2 and status = 1;");
 		/* Run Query */
-		dtb_query(query);
+		db_query(query);
 		/* Get Response */
-		response = dtb_getResponse(connection);
+		response = db_getResponse(connection);
 		if(strcmp(response,"1") == 0){
 			printf("Device %s joined network!\n",local_id_up);
-			mqtt_subscribeToDevice(local_id_up);
-			delay(5);
+			if(WIFI_STATUS == true){
+				mqtt_subscribeToDevice(local_id_up);
+				delay(5);
+			}
 		}
 	}
 }
 
 /* @brief */
-void dtb_updateStatus(char* id,int status){
+int db_getDevStatus(char* id){
+	int status;
+	char *response;
+	
+	strcpy(query,"select status from device where id =");
+	strcat(query, id);
+	/* Run Query */
+	db_query(query);
+	/* Get Response */
+	response = db_getResponse();
+	
+	status = response[0] - '0';
+	return status;
+}
+
+/* @brief */
+void db_updateStatus(char* id,int status){
 	char state[1];
 	sprintf(state,"%d",status);
 	
@@ -376,6 +393,6 @@ void dtb_updateStatus(char* id,int status){
 	strcat(query," where id = ");
 	strcat(query, id);
 	/* Run Query */
-	dtb_query(query);
+	db_query(query);
 }
 /** End Of File **/

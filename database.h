@@ -17,6 +17,7 @@
 
 /* -------------------------------------------------------------------------- */
 /* --- DEPENDANCIES --------------------------------------------------------- */
+#include "board.h"
 #include "mqtt.h"
 #include <my_global.h>
 #include <mysql.h>
@@ -34,40 +35,40 @@ extern MYSQL *connection;
 void finish_with_error();
 
 /* @brief */
-void dtb_init();
+void db_init();
 
 /* @brief */
-void dtb_query(char* query);
+void db_query(char* query);
 
 /* @brief */
-void dtb_showResponse();
+void db_showResponse();
 
 /* @brief */
-char* dtb_getResponse();
+char* db_getResponse();
 
 /* @brief */
-void dtb_checkDevAddr(uint8_t *packet);
+void db_checkDevAddr(uint8_t *packet);
 
 /* @brief */
-int dtb_checkDevExist(uint8_t *packet);
+int db_checkDevExist(uint8_t *packet);
 
 /* @brief */
-char* dtb_getHighestID();
+char* db_getHighestID();
 
 /* @brief */
-void dtb_getDevAddr(uint8_t *buff,char *received);
+void db_getDevAddr(uint8_t *buff,char *received);
 
 /* @brief */
-char* dtb_getDevID(uint8_t *packet);
+char* db_getDevID(uint8_t *packet);
 
 /* @brief */
-void dtb_checkDevStatus();
+void db_checkJoinedDevice();
 
 /* @brief */
-void dtb_checkJoinedDevice();
+int db_getDevStatus(char* id);
 
 /* @brief */
-void dtb_updateStatus(char* id,int status);
+void db_updateStatus(char* id,int status);
 
 #endif
 /** End Of File **/

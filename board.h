@@ -70,17 +70,12 @@
 #define LORA_PAYLOAD_LENGTH							10
 #define LORA_SYS_TIMEOUT							3000
 #define LORA_RX_CONTINUOUS							true
-/******************************************************************************/
-/*                              PRIVATE DATA                                  */
-/******************************************************************************/
-#define timeCycle											2 //seconds
-/******************************************************************************/
-/*                              EXPORTED DATA                                 */
-/******************************************************************************/
 
-/******************************************************************************/
-/*                            PRIVATE FUNCTIONS                               */
-/******************************************************************************/
+/*!
+ * Indicates if there is wifi connection or not.
+ */
+#define WIFI_STATUS        true
+
 /*!
  * When set to 1 the application uses the Over-the-Air activation procedure
  * When set to 0 the application uses the Personalization activation procedure
@@ -140,6 +135,12 @@
 #define LORAWAN_APPSKEY                { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C }
 
 #define RF_MID_BAND_THRESH             525000000
+
+/* -------------------------------------------------------------------------- */
+/* --- PRIVATE VARIABLES ---------------------------------------------------- */
+#define timeCycle											2 //seconds
+
+
 /******************************************************************************/
 /*                            EXPORTED FUNCTIONS                              */
 /******************************************************************************/
