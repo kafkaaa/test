@@ -72,9 +72,10 @@ void alive(int sig) {
 	if(WIFI_STATUS == true){
 		printf("Timeout! Sending ping...\n");
 		printf("-----------\n");
-		meas_nb_mqtt_ping++;
-			
+		printf("nb_mqtt_ping: %u\n",++meas_nb_mqtt_ping);
+		printf("-----------\n");		
 		mqtt_ping(&broker);
+		
 		//~ ++meas_nb_mqtt_connect;
 	
 		if(meas_nb_mqtt_connect == 10){
