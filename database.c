@@ -117,6 +117,7 @@ char* db_getResponse(){
 
 /* @brief */
 void db_checkDevAddr(uint8_t *packet){
+	piLock(DB_LOCK);
 	char* response;
 	char b1[1],b2[1],b3[1];
 	sprintf(b1,"%d",packet[2]);
@@ -208,10 +209,12 @@ void db_checkDevAddr(uint8_t *packet){
 				break;
 		}
 	}
+	piUnlock(DB_LOCK);
 }
 
 /* @brief */
 int db_checkDevExist(uint8_t *packet){
+	piLock(DB_LOCK);
 	char* response;
 	char b1[1],b2[1],b3[1];
 	sprintf(b1,"%d",packet[1]);
@@ -245,8 +248,7 @@ int db_checkDevExist(uint8_t *packet){
 	else{
 		return 0;
 	}
-	
-	
+	piUnlock(DB_LOCK);
 }
 
 /* @brief */
@@ -262,6 +264,7 @@ char* db_getHighestID(){
 
 /* @brief */
 void db_getDevAddr(uint8_t *buff,char *received){
+	piLock(DB_LOCK);
 	char *response;
 	char b[1];
 	int i,j;
@@ -313,10 +316,12 @@ void db_getDevAddr(uint8_t *buff,char *received){
 		sscanf(response,"%d",&j);
 		buff[i-1] = j;
 	}
+	piUnlock(DB_LOCK);
 }
 
 /* @brief */
 char* db_getDevID(uint8_t *packet){
+	piLock(DB_LOCK);
 	//~ int id;
 	char *response;
 	char b1[1],b2[1],b3[1];
@@ -340,6 +345,7 @@ char* db_getDevID(uint8_t *packet){
 	return response;
 	//~ sscanf(response,"%d",&id);
 	//~ return id;
+	piUnlock(DB_LOCK);
 }
 
 /* @brief */

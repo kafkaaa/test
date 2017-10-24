@@ -39,7 +39,6 @@
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* Connection to Database */
-MYSQL *connection;
 char recvbuff[MAX_PACKET_SIZE];
 char SUBCRIBE_TOPIC[MAX_PACKET_SIZE];// "/v1.6/devices/Device/D1Led/lv"
 char PUBLISH_TOPIC[MAX_PACKET_SIZE]; // "/v1.6/devices/Device1"
@@ -54,7 +53,6 @@ uint32_t meas_nb_mqtt_tx_ok = 0;
 uint32_t meas_nb_mqtt_ping = 0;
 uint32_t meas_nb_mqtt_connect = 0;
 extern uint32_t meas_nb_tx_ok;
-extern uint32_t meas_nb_rx_ok;
 int meas_nb_timeout = 0;
 
 /* -------------------------------------------------------------------------- */
@@ -76,23 +74,23 @@ void alive(int sig) {
 	
 	++meas_nb_timeout;
 	if(meas_nb_timeout == 10){ // after 3 minutes
-		//~ piLock(DB_LOCK);
+		piLock(DB_LOCK);
 		response = db_getHighestID();
 		highestID = response[0] - '0';
 		
 		for(i = 1; i <= highestID; i++){
 			sprintf(local_id_alive,"%d",i);
 			devStatus = db_getDevStatus(local_id_alive);
-			if(devStatus = 1){
+			if(devStatus == 1){ // Since joined, there is no packet received => delete from network.
 				db_updateStatus(local_id_alive, 0);
 			}
-			else if (devStatus > 1){
+			else if (devStatus > 1){ // Reset status to the one after joined.
 				db_updateStatus(local_id_alive, 1);
 			}
 		}			
 		
 		meas_nb_timeout = 0;
-		//~ piUnlock(DB_LOCK);
+		piUnlock(DB_LOCK);
 	}
 	
 	if(WIFI_STATUS == true){

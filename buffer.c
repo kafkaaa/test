@@ -37,7 +37,6 @@ uint8_t dataExportedS[MAX_SERVER_PACKET_SIZE];
 int frontS = 0,rearS = -1, packetCountS = 0, newPacketS = 0;
 
 /* --- Thread Lock for sending packet --- */
-extern int SX_SEND_LOCK;
 int i;
 int PiBuffer_LOCK, ServerBuffer_LOCK;
 

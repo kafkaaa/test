@@ -19,6 +19,7 @@
 /* --- DEPENDANCIES --------------------------------------------------------- */
 #include "board.h"
 #include "mqtt.h"
+#include <wiringPi.h>
 #include <my_global.h>
 #include <mysql.h>
 #include <string.h>
@@ -27,8 +28,8 @@
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- Database --- */
-extern MYSQL *connection;
-
+MYSQL *connection;
+int DB_LOCK;
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE FUNCTIONS DECLARATION ---------------------------------------- */
 /* @brief */
