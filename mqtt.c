@@ -28,7 +28,7 @@
 /* MQTT broker port */
 #define    	SERVER_PORT			1883
 /* MQTT client name */
-#define 	USER_NAME			"vjioaDOjYPv78qNu9LvMn6nAUzr1xq"
+#define 	USER_NAME			"jXkCJvYQ6nZg7mf7dN97kAMaaBBQIf"
 /* MQTT password */
 #define 	PASSWORD			""
 /* KEEP_ALIVE Time */
@@ -55,6 +55,7 @@ uint32_t meas_nb_mqtt_ping = 0;
 uint32_t meas_nb_mqtt_connect = 0;
 extern uint32_t meas_nb_tx_ok;
 extern uint32_t meas_nb_rx_ok;
+int meas_nb_timeout = 0;
 
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE FUNCTIONS DEFINITION ----------------------------------------- */
@@ -69,16 +70,39 @@ int catch_signal(int sig,void (*handler) (int)) {
 
 /* @brief */
 void alive(int sig) {
+	int i, devStatus, highestID;
+	char local_id_alive[2];
+	char* response;
+	
+	++meas_nb_timeout;
+	if(meas_nb_timeout == 10){ // after 3 minutes
+		//~ piLock(DB_LOCK);
+		response = db_getHighestID();
+		highestID = response[0] - '0';
+		
+		for(i = 1; i <= highestID; i++){
+			sprintf(local_id_alive,"%d",i);
+			devStatus = db_getDevStatus(local_id_alive);
+			if(devStatus = 1){
+				db_updateStatus(local_id_alive, 0);
+			}
+			else if (devStatus > 1){
+				db_updateStatus(local_id_alive, 1);
+			}
+		}			
+		
+		meas_nb_timeout = 0;
+		//~ piUnlock(DB_LOCK);
+	}
+	
 	if(WIFI_STATUS == true){
 		printf("Timeout! Sending ping...\n");
 		printf("-----------\n");
 		printf("nb_mqtt_ping: %u\n",++meas_nb_mqtt_ping);
 		printf("-----------\n");		
 		mqtt_ping(&broker);
-		
-		//~ ++meas_nb_mqtt_connect;
 	
-		if(meas_nb_mqtt_connect == 10){
+		if(meas_nb_mqtt_ping == 10){
 			piLock(SERVER_LOCK);
 								
 			printf("Disconnect to Server!\n");
@@ -100,8 +124,9 @@ void alive(int sig) {
 				error("Cannot connect to server!");
 			}
 			
-			piUnlock(SERVER_LOCK);	
-			meas_nb_mqtt_connect = 0;
+			piUnlock(SERVER_LOCK);
+			meas_nb_mqtt_connect++;
+			meas_nb_mqtt_ping = 0;
 		}
 	}
 	
@@ -111,7 +136,20 @@ void alive(int sig) {
 
 /* @brief */
 void term(int sig) {
-	/* >>>>> DISCONNECT */
+	//~ /* Delete device from database */
+	//~ int i, highestID;
+	//~ char local_id_delete[2];
+	//~ char* response;
+	//~ response = db_getHighestID();
+	//~ highestID = response[0] - '0';
+	
+	//~ for(i = 1; i <= highestID; i++){
+		//~ sprintf(local_id_delete,"%d",i);
+		//~ db_updateStatus(local_id_delete,0);
+	//~ }
+	
+	/* DISCONNECT */
+	mysql_close(connection);
 	mqtt_disconnect(&broker);
 	close_socket(&broker);
 	printf("\n");

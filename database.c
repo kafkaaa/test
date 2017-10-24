@@ -225,19 +225,28 @@ int db_checkDevExist(uint8_t *packet){
 	strcat(query,") and (b3 = ");
 	strcat(query,b3);
 	strcat(query,");");
-	//~ printf("%s\n",query);
-	
-	/* Run Query */
 	db_query(query);
-	/* Get Response */
 	response = db_getResponse();
 	
 	if(strcmp(response,"1") == 0){
 		return 1;
+		/* Update Status */
+		strcpy(query,"select id from device where (b1 = ");
+		strcat(query,b1);
+		strcat(query,") and (b2 = ");
+		strcat(query,b2);
+		strcat(query,") and (b3 = ");
+		strcat(query,b3);
+		strcat(query,");");
+		db_query(query);
+		response = db_getResponse();
+		db_updateStatus(response, 2);
 	}						
 	else{
 		return 0;
 	}
+	
+	
 }
 
 /* @brief */
