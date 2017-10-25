@@ -28,7 +28,7 @@
 /* MQTT broker port */
 #define    	SERVER_PORT			1883
 /* MQTT client name */
-#define 	USER_NAME			"jXkCJvYQ6nZg7mf7dN97kAMaaBBQIf"
+#define 	USER_NAME			"vjioaDOjYPv78qNu9LvMn6nAUzr1xq"
 /* MQTT password */
 #define 	PASSWORD			""
 /* KEEP_ALIVE Time */
@@ -52,7 +52,6 @@ int SERVER_LOCK;
 uint32_t meas_nb_mqtt_tx_ok = 0;
 uint32_t meas_nb_mqtt_ping = 0;
 uint32_t meas_nb_mqtt_connect = 0;
-extern uint32_t meas_nb_tx_ok;
 int meas_nb_timeout = 0;
 
 /* -------------------------------------------------------------------------- */
@@ -73,7 +72,7 @@ void alive(int sig) {
 	char* response;
 	
 	++meas_nb_timeout;
-	if(meas_nb_timeout == 10){ // after 3 minutes
+	if(meas_nb_timeout == 10){ // after 5 minutes
 		piLock(DB_LOCK);
 		response = db_getHighestID();
 		highestID = response[0] - '0';
@@ -100,32 +99,32 @@ void alive(int sig) {
 		printf("-----------\n");		
 		mqtt_ping(&broker);
 	
-		if(meas_nb_mqtt_ping == 10){
-			piLock(SERVER_LOCK);
+		//~ if(meas_nb_mqtt_ping == 10){
+			//~ piLock(SERVER_LOCK);
 								
-			printf("Disconnect to Server!\n");
-			printf("-----------\n");
-			/* DISCONNECT */
-			mqtt_disconnect(&broker);
-			close_socket(&broker);
+			//~ printf("Disconnect to Server!\n");
+			//~ printf("-----------\n");
+			//~ /* DISCONNECT */
+			//~ mqtt_disconnect(&broker);
+			//~ close_socket(&broker);
 			
-			/* >>>>> RECONNECT */
-			printf("Reconnect to Server!\n");
-			printf("-----------\n");
-			//~ /* Init */
-			mqtt_init(&broker, CLIENT_ID);
-			mqtt_init_auth(&broker, USER_NAME, PASSWORD);
-			init_socket(&broker, SERVER_ADDRESS, SERVER_PORT, KEEP_ALIVE);
+			//~ /* >>>>> RECONNECT */
+			//~ printf("Reconnect to Server!\n");
+			//~ printf("-----------\n");
+			/* Init */
+			//~ mqtt_init(&broker, CLIENT_ID);
+			//~ mqtt_init_auth(&broker, USER_NAME, PASSWORD);
+			//~ init_socket(&broker, SERVER_ADDRESS, SERVER_PORT, KEEP_ALIVE);
 
-			/* >>>>> CONNECT */
-			if((mqtt_connect(&broker)) < 0){
-				error("Cannot connect to server!");
-			}
+			//~ /* >>>>> CONNECT */
+			//~ if((mqtt_connect(&broker)) < 0){
+				//~ error("Cannot connect to server!");
+			//~ }
 			
-			piUnlock(SERVER_LOCK);
-			meas_nb_mqtt_connect++;
-			meas_nb_mqtt_ping = 0;
-		}
+			//~ piUnlock(SERVER_LOCK);
+			//~ meas_nb_mqtt_connect++;
+			//~ meas_nb_mqtt_ping = 0;
+		//~ }
 	}
 	
 	alarm(KEEP_ALIVE);
@@ -419,19 +418,19 @@ void mqtt_subscribeToDevice(char *id){
 	printf("Subcribing to Device %s on Server!\n",id);
 	printf("-----------\n");
 	/* Led */
-	strcpy(SUBCRIBE_TOPIC,"/v1.6/devices/Device");
+	strcpy(SUBCRIBE_TOPIC,"/v1.6/devices/device");
 	strcat(SUBCRIBE_TOPIC,id);
 	strcat(SUBCRIBE_TOPIC,"/D");
 	strcat(SUBCRIBE_TOPIC,id);
 	strcat(SUBCRIBE_TOPIC,"Led/lv");
-	printf("su:%s\n",SUBCRIBE_TOPIC);
+	//~ printf("su:%s\n",SUBCRIBE_TOPIC);
 	mqtt_subscribe(&broker, SUBCRIBE_TOPIC, 0);
 	
 	/* Delay */
 	delay(5);
 	
 	/* Pump */
-	strcpy(SUBCRIBE_TOPIC,"/v1.6/devices/Device");
+	strcpy(SUBCRIBE_TOPIC,"/v1.6/devices/device");
 	strcat(SUBCRIBE_TOPIC,id);
 	strcat(SUBCRIBE_TOPIC,"/D");
 	strcat(SUBCRIBE_TOPIC,id);
