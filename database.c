@@ -201,7 +201,7 @@ void db_checkDevAddr(uint8_t *packet){
 				db_query(query);
 				if(WIFI_STATUS == true){
 					/* Make device and variables on Server */
-					mqtt_makeNewDevice(local_id_up);
+					//~ mqtt_makeNewDevice(local_id_up);
 					delay(1);
 					/* Subcribe to new control device */
 					mqtt_subscribeToDevice(local_id_up);
@@ -276,11 +276,11 @@ void db_getDevAddr(uint8_t *buff,char *received){
 		local_id_down[1] = received[29];
 		printf("Device %s",local_id_down);
 		switch(received[30]){
-		case 76: 
+		case 108: 
 			printf(" Led");
 			buff[4] = 2;
 			break;
-		case 80: 
+		case 112: 
 			printf(" Pump"); 
 			buff[4] = 3;		
 			break;
@@ -291,11 +291,11 @@ void db_getDevAddr(uint8_t *buff,char *received){
 		local_id_down[0] = received[27];
 		printf("Device %s",local_id_down);
 		switch(received[28]){
-		case 76: 
+		case 108: 
 			printf(" Led");
 			buff[4] = 2;
 			break;
-		case 80: 
+		case 112: 
 			printf(" Pump"); 
 			buff[4] = 3;		
 			break;

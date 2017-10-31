@@ -99,32 +99,33 @@ void alive(int sig) {
 		printf("-----------\n");		
 		mqtt_ping(&broker);
 	
-		//~ if(meas_nb_mqtt_ping == 10){
-			//~ piLock(SERVER_LOCK);
+		if(meas_nb_mqtt_ping == 10){ // after 5 minutes
+			piLock(SERVER_LOCK);
 								
-			//~ printf("Disconnect to Server!\n");
-			//~ printf("-----------\n");
-			//~ /* DISCONNECT */
-			//~ mqtt_disconnect(&broker);
-			//~ close_socket(&broker);
+			printf("Disconnected from Server!\n");
+			printf("-----------\n");
+			/* DISCONNECT */
+			mqtt_disconnect(&broker);
+			close_socket(&broker);
 			
-			//~ /* >>>>> RECONNECT */
-			//~ printf("Reconnect to Server!\n");
-			//~ printf("-----------\n");
-			/* Init */
-			//~ mqtt_init(&broker, CLIENT_ID);
-			//~ mqtt_init_auth(&broker, USER_NAME, PASSWORD);
-			//~ init_socket(&broker, SERVER_ADDRESS, SERVER_PORT, KEEP_ALIVE);
+			/* >>>>> RECONNECT */
+			printf("Reconnecting to Server...\n");
+			printf("-----------\n");
+			
+			/* Init MQTT */
+			mqtt_init(&broker, CLIENT_ID);
+			mqtt_init_auth(&broker, USER_NAME, PASSWORD);
+			init_socket(&broker, SERVER_ADDRESS, SERVER_PORT, KEEP_ALIVE);
 
-			//~ /* >>>>> CONNECT */
-			//~ if((mqtt_connect(&broker)) < 0){
-				//~ error("Cannot connect to server!");
-			//~ }
+			/* >>>>> CONNECT */
+			if((mqtt_connect(&broker)) < 0){
+				error("Cannot connect to server!");
+			}
 			
-			//~ piUnlock(SERVER_LOCK);
-			//~ meas_nb_mqtt_connect++;
-			//~ meas_nb_mqtt_ping = 0;
-		//~ }
+			piUnlock(SERVER_LOCK);
+			meas_nb_mqtt_connect++;
+			meas_nb_mqtt_ping = 0;
+		}
 	}
 	
 	alarm(KEEP_ALIVE);
@@ -398,9 +399,7 @@ void mqtt_makeNewDevice(char *id){
 	/* Make Message */
 	strcpy(sendbuff,"{\"D");
 	strcat(sendbuff,id);
-	strcat(sendbuff,"Led\": 0,\"D");
-	strcat(sendbuff,id);
-	strcat(sendbuff,"Pump\": 0}");
+	strcat(sendbuff,"Led\": 0}");
 	//~ printf("%s\n %s\n",PUBLISH_TOPIC,sendbuff);
 	
 	/* >>>>> PUBLISH */
@@ -420,21 +419,9 @@ void mqtt_subscribeToDevice(char *id){
 	/* Led */
 	strcpy(SUBCRIBE_TOPIC,"/v1.6/devices/device");
 	strcat(SUBCRIBE_TOPIC,id);
-	strcat(SUBCRIBE_TOPIC,"/D");
+	strcat(SUBCRIBE_TOPIC,"/d");
 	strcat(SUBCRIBE_TOPIC,id);
-	strcat(SUBCRIBE_TOPIC,"Led/lv");
-	//~ printf("su:%s\n",SUBCRIBE_TOPIC);
-	mqtt_subscribe(&broker, SUBCRIBE_TOPIC, 0);
-	
-	/* Delay */
-	delay(5);
-	
-	/* Pump */
-	strcpy(SUBCRIBE_TOPIC,"/v1.6/devices/device");
-	strcat(SUBCRIBE_TOPIC,id);
-	strcat(SUBCRIBE_TOPIC,"/D");
-	strcat(SUBCRIBE_TOPIC,id);
-	strcat(SUBCRIBE_TOPIC,"Pump/lv");
+	strcat(SUBCRIBE_TOPIC,"led/lv");
 	//~ printf("su:%s\n",SUBCRIBE_TOPIC);
 	mqtt_subscribe(&broker, SUBCRIBE_TOPIC, 0);
 	
