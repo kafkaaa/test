@@ -100,7 +100,7 @@ void alive(int sig) {
 		mqtt_ping(&broker);
 	
 		if(meas_nb_mqtt_ping == 10){ // after 5 minutes
-			piLock(SERVER_LOCK);
+			//~ piLock(SERVER_LOCK);
 								
 			printf("Disconnected from Server!\n");
 			printf("-----------\n");
@@ -122,7 +122,7 @@ void alive(int sig) {
 				error("Cannot connect to server!");
 			}
 			
-			piUnlock(SERVER_LOCK);
+			//~ piUnlock(SERVER_LOCK);
 			meas_nb_mqtt_connect++;
 			meas_nb_mqtt_ping = 0;
 		}
@@ -362,10 +362,10 @@ void mqtt_publish(uint8_t* node_data){
 	//~ printf("%s\n %s\n",PUBLISH_TOPIC,sendbuff);
 	
 	if(WIFI_STATUS == true){
-		piLock(SERVER_LOCK);
+		//~ piLock(SERVER_LOCK);
 		/* >>>>> PUBLISH */
 		mqtt_publish_with_qos(&broker, PUBLISH_TOPIC, sendbuff, 1, 0);
-		piUnlock(SERVER_LOCK);
+		//~ piUnlock(SERVER_LOCK);
 	}
 	
 }
@@ -405,14 +405,14 @@ void mqtt_makeNewDevice(char *id){
 	/* >>>>> PUBLISH */
 	printf("Making Control Device %s on Server!\n",id);
 	printf("-----------\n");
-	piLock(SERVER_LOCK);
+	//~ piLock(SERVER_LOCK);
 	mqtt_publish_with_qos(&broker, PUBLISH_TOPIC, sendbuff, 1, 0);
-	piUnlock(SERVER_LOCK);
+	//~ piUnlock(SERVER_LOCK);
 }
 
 /* @brief */
 void mqtt_subscribeToDevice(char *id){
-	piLock(SERVER_LOCK);
+	//~ piLock(SERVER_LOCK);
 	
 	printf("Subcribing to Device %s on Server!\n",id);
 	printf("-----------\n");
@@ -425,6 +425,6 @@ void mqtt_subscribeToDevice(char *id){
 	//~ printf("su:%s\n",SUBCRIBE_TOPIC);
 	mqtt_subscribe(&broker, SUBCRIBE_TOPIC, 0);
 	
-	piUnlock(SERVER_LOCK);
+	//~ piUnlock(SERVER_LOCK);
 }
 /** End Of File **/

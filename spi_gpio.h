@@ -26,21 +26,24 @@
 
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
-/* SX1276 */
-#define NSS		8
-#define SCK		11
-#define MOSI   	10
-#define MISO   	9
-#define DI0    	27
-#define RESET	22
+//~ /* SX1276 */
+//~ #define NSS		8
+//~ #define SCK		11
+//~ #define MOSI   	10
+//~ #define MISO   	9
+//~ #define DI0    	27
+//~ #define RESET	22
 
-///* RF96 */
-//#define NSS		23
-//#define SCK		7
-//#define MOSI   	24
-//#define MISO   	8
-//#define DI0    	27
-//#define RESET		10
+/* RF96 */
+#define MOSI	9
+#define MISO	11
+#define SCK		10
+#define NSS		7
+#define DI0		22
+#define RESET	8
+#define LED1	25
+#define LED2	24
+#define LED3	23
 
 /* Define state for pins */
 #define NSS0	digitalWrite(NSS,LOW)
