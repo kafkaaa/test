@@ -117,7 +117,7 @@ char* db_getResponse(){
 
 /* @brief */
 void db_checkDevAddr(uint8_t *packet){
-	piLock(DB_LOCK);
+	//~ piLock(DB_LOCK);
 	char* response;
 	char b1[1],b2[1],b3[1];
 	sprintf(b1,"%d",packet[2]);
@@ -162,12 +162,12 @@ void db_checkDevAddr(uint8_t *packet){
 		switch(packet[5]){							
 			case 1:
 				break;
-			case 2: 
-				if(WIFI_STATUS == true){
-					/* Subcribe to control device */
-					mqtt_subscribeToDevice(local_id_up);
-					break;
-				}
+			//~ case 2: 
+				//~ if(WIFI_STATUS == true){
+					//~ /* Subcribe to control device */
+					//~ mqtt_subscribeToDevice(local_id_up);
+					//~ break;
+				//~ }
 		}
 	}	
 	/* If device does not exist */					
@@ -202,19 +202,19 @@ void db_checkDevAddr(uint8_t *packet){
 				if(WIFI_STATUS == true){
 					/* Make device and variables on Server */
 					//~ mqtt_makeNewDevice(local_id_up);
-					delay(1);
+					delay(10);
 					/* Subcribe to new control device */
 					mqtt_subscribeToDevice(local_id_up);
 				}
 				break;
 		}
 	}
-	piUnlock(DB_LOCK);
+	//~ piUnlock(DB_LOCK);
 }
 
 /* @brief */
 int db_checkDevExist(uint8_t *packet){
-	piLock(DB_LOCK);
+	//~ piLock(DB_LOCK);
 	char* response;
 	char b1[1],b2[1],b3[1];
 	sprintf(b1,"%d",packet[1]);
@@ -248,7 +248,7 @@ int db_checkDevExist(uint8_t *packet){
 	else{
 		return 0;
 	}
-	piUnlock(DB_LOCK);
+	//~ piUnlock(DB_LOCK);
 }
 
 /* @brief */
@@ -264,7 +264,7 @@ char* db_getHighestID(){
 
 /* @brief */
 void db_getDevAddr(uint8_t *buff,char *received){
-	piLock(DB_LOCK);
+	//~ piLock(DB_LOCK);
 	char *response;
 	char b[1];
 	int i,j;
@@ -316,12 +316,12 @@ void db_getDevAddr(uint8_t *buff,char *received){
 		sscanf(response,"%d",&j);
 		buff[i-1] = j;
 	}
-	piUnlock(DB_LOCK);
+	//~ piUnlock(DB_LOCK);
 }
 
 /* @brief */
 char* db_getDevID(uint8_t *packet){
-	piLock(DB_LOCK);
+	//~ piLock(DB_LOCK);
 	//~ int id;
 	char *response;
 	char b1[1],b2[1],b3[1];
@@ -345,7 +345,7 @@ char* db_getDevID(uint8_t *packet){
 	return response;
 	//~ sscanf(response,"%d",&id);
 	//~ return id;
-	piUnlock(DB_LOCK);
+	//~ piUnlock(DB_LOCK);
 }
 
 /* @brief */

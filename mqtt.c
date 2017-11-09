@@ -73,7 +73,7 @@ void alive(int sig) {
 	
 	++meas_nb_timeout;
 	if(meas_nb_timeout == 10){ // after 5 minutes
-		piLock(DB_LOCK);
+		//~ piLock(DB_LOCK);
 		response = db_getHighestID();
 		highestID = response[0] - '0';
 		
@@ -89,7 +89,7 @@ void alive(int sig) {
 		}			
 		
 		meas_nb_timeout = 0;
-		piUnlock(DB_LOCK);
+		//~ piUnlock(DB_LOCK);
 	}
 	
 	if(WIFI_STATUS == true){
@@ -108,7 +108,6 @@ void alive(int sig) {
 			mqtt_disconnect(&broker);
 			close_socket(&broker);
 			
-			/* >>>>> RECONNECT */
 			printf("Reconnecting to Server...\n");
 			printf("-----------\n");
 			
@@ -117,10 +116,13 @@ void alive(int sig) {
 			mqtt_init_auth(&broker, USER_NAME, PASSWORD);
 			init_socket(&broker, SERVER_ADDRESS, SERVER_PORT, KEEP_ALIVE);
 
-			/* >>>>> CONNECT */
+			/* RECONNECT */
 			if((mqtt_connect(&broker)) < 0){
 				error("Cannot connect to server!");
 			}
+			
+			/* Resubscribe */
+			db_checkJoinedDevice();
 			
 			//~ piUnlock(SERVER_LOCK);
 			meas_nb_mqtt_connect++;
@@ -229,13 +231,13 @@ void read_socket() {
 	}
     else
 	{	
-		//~ /* Print Response from Server */
-		//~ int i;
-		//~ printf("Response:");
-		//~ for(i=0;i<length;i++){
-			//~ printf("%d ",recvbuff[i]);
-		//~ }
-		//~ printf("\n");
+		/* Print Response from Server */
+		int i;
+		printf("Response:");
+		for(i=0;i<length;i++){
+			printf("%d ",recvbuff[i]);
+		}
+		printf("\n");
 		
 		/* Analyse Type Of Msg */
 		switch(recvbuff[0]){

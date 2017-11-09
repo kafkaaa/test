@@ -128,6 +128,10 @@ void bf_exportFromServerBuffer(){
 		piUnlock(SX_SEND_LOCK);
 		
 		/* CSMA Here */
+		delay(100);
+		piLock(SX_SEND_LOCK);
+		Send(FRAME_TYPE_DATA_CONFIRMED_DOWN, dataExportedS, 6);
+		piUnlock(SX_SEND_LOCK);
 		
 		piLock(ServerBuffer_LOCK);
 		newPacketS--;
