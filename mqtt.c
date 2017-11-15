@@ -231,13 +231,13 @@ void read_socket() {
 	}
     else
 	{	
-		/* Print Response from Server */
-		int i;
-		printf("Response:");
-		for(i=0;i<length;i++){
-			printf("%d ",recvbuff[i]);
-		}
-		printf("\n");
+		//~ /* Print Response from Server */
+		//~ int i;
+		//~ printf("Response:");
+		//~ for(i=0;i<length;i++){
+			//~ printf("%d ",recvbuff[i]);
+		//~ }
+		//~ printf("\n");
 		
 		/* Analyse Type Of Msg */
 		switch(recvbuff[0]){
