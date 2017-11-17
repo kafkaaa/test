@@ -99,7 +99,7 @@ void alive(int sig) {
 		printf("-----------\n");		
 		mqtt_ping(&broker);
 	
-		if(meas_nb_mqtt_ping == 10){ // after 5 minutes
+		if(meas_nb_mqtt_ping == 20){ // after 10 minutes
 			//~ piLock(SERVER_LOCK);
 								
 			printf("Disconnected from Server!\n");
@@ -120,7 +120,8 @@ void alive(int sig) {
 			if((mqtt_connect(&broker)) < 0){
 				error("Cannot connect to server!");
 			}
-			
+
+			delay(5);
 			/* Resubscribe */
 			db_checkJoinedDevice();
 			
@@ -162,6 +163,7 @@ void term(int sig) {
 /* @brief */
 void error(char* msg) {
 	printf("%s: %s\n",msg,strerror(errno));
+	term(SIGINT);
 	exit(1);
 }
 

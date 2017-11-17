@@ -162,12 +162,12 @@ void db_checkDevAddr(uint8_t *packet){
 		switch(packet[5]){							
 			case 1:
 				break;
-			//~ case 2: 
-				//~ if(WIFI_STATUS == true){
-					//~ /* Subcribe to control device */
-					//~ mqtt_subscribeToDevice(local_id_up);
-					//~ break;
-				//~ }
+			case 2: 
+				if(WIFI_STATUS == true){
+					/* Subcribe to control device */
+					mqtt_subscribeToDevice(local_id_up);
+					break;
+				}
 		}
 	}	
 	/* If device does not exist */					
@@ -231,8 +231,7 @@ int db_checkDevExist(uint8_t *packet){
 	db_query(query);
 	response = db_getResponse();
 	
-	if(strcmp(response,"1") == 0){
-		return 1;
+	if(strcmp(response,"1") == 0){	
 		/* Update Status */
 		strcpy(query,"select id from device where (b1 = ");
 		strcat(query,b1);
@@ -244,6 +243,8 @@ int db_checkDevExist(uint8_t *packet){
 		db_query(query);
 		response = db_getResponse();
 		db_updateStatus(response, 2);
+		
+		return 1;
 	}						
 	else{
 		return 0;
@@ -361,12 +362,28 @@ void db_checkJoinedDevice(){
 	response = db_getResponse(connection);
 	sscanf(response,"%d",&nb_device);
 	
-	/* Subcribe to control device if status = 1 */
+	/* Subcribe to control device if status = 1 or 2 */
 	for(i = 1; i<= nb_device; i++){
 		sprintf(local_id_up,"%d",i);
+		
 		strcpy(query,"select count(*) from device where id = ");
 		strcat(query,local_id_up);
 		strcat(query," and type = 2 and status = 1;");
+		/* Run Query */
+		db_query(query);
+		/* Get Response */
+		response = db_getResponse(connection);
+		if(strcmp(response,"1") == 0){
+			printf("Device %s joined network!\n",local_id_up);
+			if(WIFI_STATUS == true){
+				mqtt_subscribeToDevice(local_id_up);
+				delay(5);
+			}
+		}
+		
+		strcpy(query,"select count(*) from device where id = ");
+		strcat(query,local_id_up);
+		strcat(query," and type = 2 and status = 2;");
 		/* Run Query */
 		db_query(query);
 		/* Get Response */
