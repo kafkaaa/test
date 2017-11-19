@@ -72,7 +72,7 @@ void alive(int sig) {
 	char* response;
 	
 	++meas_nb_timeout;
-	if(meas_nb_timeout == 10){ // after 5 minutes
+	if(meas_nb_timeout == 10){ // 10 ~ after 5 minutes
 		//~ piLock(DB_LOCK);
 		response = db_getHighestID();
 		highestID = response[0] - '0';
@@ -99,7 +99,7 @@ void alive(int sig) {
 		printf("-----------\n");		
 		mqtt_ping(&broker);
 	
-		if(meas_nb_mqtt_ping == 20){ // after 10 minutes
+		if(meas_nb_mqtt_ping == 15){ // 20 ~ after 10 minutes
 			//~ piLock(SERVER_LOCK);
 								
 			printf("Disconnected from Server!\n");
@@ -121,7 +121,7 @@ void alive(int sig) {
 				error("Cannot connect to server!");
 			}
 
-			delay(5);
+			delay(1000);
 			/* Resubscribe */
 			db_checkJoinedDevice();
 			
