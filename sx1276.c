@@ -967,47 +967,61 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 		uint8_t netIDFromGW = 0;
 		uint8_t typeOfDataFromeGW = payload[pktLen++];
 
+		int i;
+		printf("Packet:");
+		for(i=0;i<10;i++){
+			printf("%d ",payload[i]);
+		}
+		printf("\n");
+
 		switch(typeOfDataFromeGW)
 		{
 			case FRAME_TYPE_JOIN_REQ:
 				{
-						LoRaMacDevAddr = payload[pktLen++];
-						LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 8 );
-						LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 16 );
-						LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 24 );
-						printf("Device %d %d %d %d send Join Request!\n",payload[1],payload[2],payload[3],payload[4]);
-						printf("-----------\n");
-						
-						db_checkDevAddr(payload);
+					LoRaMacDevAddr = payload[pktLen++];
+					LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 8 );
+					LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 16 );
+					LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 24 );
+					printf("Device %d %d %d %d send Join Request!\n",payload[1],payload[2],payload[3],payload[4]);
+					printf("-----------\n");
 					
-						piLock(SX_SEND_LOCK);
-						Send(FRAME_TYPE_JOIN_ACCEPT, 0, 0);
-						piUnlock(SX_SEND_LOCK);
+					db_checkDevAddr(payload);
+				
+					piLock(SX_SEND_LOCK);
+					Send(FRAME_TYPE_JOIN_ACCEPT, 0, 0);
+					piUnlock(SX_SEND_LOCK);
 				}
 				break;
 			case FRAME_TYPE_DATA_CONFIRMED_UP:
 				{
-						netIDFromGW = payload[4];
-						if(netIDFromGW==netID)
-						{
-							LoRaMacDevAddr = payload[pktLen++];
-							LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 8 );
-							LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 16 );
-							LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 24 );	
-							
-							if(db_checkDevExist(payload) == 1){
-								/* Import to Pi Buffer */
-								bf_importToPiBuffer(payload);
-							}
-							piLock(SX_SEND_LOCK);
-							Send(FRAME_TYPE_DATA_UNCONFIRMED_DOWN, 0, 0);
-							piUnlock(SX_SEND_LOCK);							
+					netIDFromGW = payload[4];
+					if(netIDFromGW==netID)
+					{
+						LoRaMacDevAddr = payload[pktLen++];
+						LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 8 );
+						LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 16 );
+						LoRaMacDevAddr |= ( (uint32_t)payload[pktLen++] << 24 );	
+						
+						if(db_checkDevExist(payload) == 1){
+							/* Import to Pi Buffer */
+							bf_importToPiBuffer(payload);
 						}
+						piLock(SX_SEND_LOCK);
+						Send(FRAME_TYPE_DATA_UNCONFIRMED_DOWN, 0, 0);
+						piUnlock(SX_SEND_LOCK);							
+					}
 				}
 				break;
 			case FRAME_TYPE_DATA_UNCONFIRMED_UP:
 				{
-						
+					netIDFromGW = payload[4];
+					if(netIDFromGW==netID)
+					{							
+						if(db_checkDevExist(payload) == 1){
+							printf("Device 3 sent ping.\n");
+							printf("-----------\n");
+						}						
+					}
 				}
 				break;
 			default:

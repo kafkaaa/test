@@ -165,7 +165,7 @@ void db_checkDevAddr(uint8_t *packet){
 			case 2: 
 				if(WIFI_STATUS == true){
 					/* Subcribe to control device */
-					//~ mqtt_subscribeToDevice(local_id_up);
+					mqtt_subscribeToDevice(local_id_up);
 					break;
 				}
 		}
