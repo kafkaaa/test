@@ -67,7 +67,7 @@ typedef struct {
 	// Connection info
 	char clientid[50];
 	// Auth fields
-	char username[31];
+	char username[35];
 	char password[2];
 	// Will topic
 	uint8_t will_retain;

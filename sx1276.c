@@ -967,12 +967,12 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 		uint8_t netIDFromGW = 0;
 		uint8_t typeOfDataFromeGW = payload[pktLen++];
 
-		int i;
-		printf("Packet:");
-		for(i=0;i<10;i++){
-			printf("%d ",payload[i]);
-		}
-		printf("\n");
+		//~ int i;
+		//~ printf("Packet:");
+		//~ for(i=0;i<10;i++){
+			//~ printf("%d ",payload[i]);
+		//~ }
+		//~ printf("\n");
 
 		switch(typeOfDataFromeGW)
 		{
@@ -1018,7 +1018,9 @@ void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ) 
 					if(netIDFromGW==netID)
 					{							
 						if(db_checkDevExist(payload) == 1){
-							printf("Device 3 sent ping.\n");
+							char* response;
+							response = db_getDevID(payload);													
+							printf("Device %s Sent Ping.\n",response);
 							printf("-----------\n");
 						}						
 					}

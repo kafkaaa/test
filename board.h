@@ -28,6 +28,11 @@
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /*!
+ * Indicates if there is wifi connection or not.
+ */
+#define WIFI_STATUS        true
+
+/*!
  * Generic definition
  */
 #ifndef SUCCESS
@@ -45,7 +50,7 @@
 #endif /* DEBUG */
 
 /* Define parameters for Txconfig */
-#define LORA_RF_FREQUENCY							433175000   // Hz
+#define LORA_RF_FREQUENCY							433575000   // Hz
 #define LORA_TX_OUTPUT_POWER						20		    // dBm
 #define LORA_FDEV									0
 #define LORA_BANDWIDTH                              0           // [0: 125 kHz,
@@ -70,11 +75,6 @@
 #define LORA_PAYLOAD_LENGTH							10
 #define LORA_SYS_TIMEOUT							3000
 #define LORA_RX_CONTINUOUS							true
-
-/*!
- * Indicates if there is wifi connection or not.
- */
-#define WIFI_STATUS        true
 
 /*!
  * When set to 1 the application uses the Over-the-Air activation procedure

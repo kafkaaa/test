@@ -201,7 +201,7 @@ void db_checkDevAddr(uint8_t *packet){
 				db_query(query);
 				if(WIFI_STATUS == true){
 					/* Make device and variables on Server */
-					//~ mqtt_makeNewDevice(local_id_up);
+					mqtt_makeNewDevice(local_id_up);
 					delay(10);
 					/* Subcribe to new control device */
 					mqtt_subscribeToDevice(local_id_up);
@@ -377,7 +377,7 @@ void db_checkJoinedDevice(){
 			printf("Device %s joined network!\n",local_id_up);
 			if(WIFI_STATUS == true){
 				mqtt_subscribeToDevice(local_id_up);
-				delay(5);
+				delay(10);
 			}
 		}
 		
@@ -392,7 +392,7 @@ void db_checkJoinedDevice(){
 			printf("Device %s joined network!\n",local_id_up);
 			if(WIFI_STATUS == true){
 				mqtt_subscribeToDevice(local_id_up);
-				delay(5);
+				delay(10);
 			}
 		}
 	}

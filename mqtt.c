@@ -29,6 +29,7 @@
 #define    	SERVER_PORT			1883
 /* MQTT client name */
 #define 	USER_NAME			"vjioaDOjYPv78qNu9LvMn6nAUzr1xq"
+//~ #define 	USER_NAME			"A1E-jXkCJvYQ6nZg7mf7dN97kAMaaBBQIf"
 /* MQTT password */
 #define 	PASSWORD			""
 /* KEEP_ALIVE Time */
@@ -40,8 +41,8 @@
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* Connection to Database */
 char recvbuff[MAX_PACKET_SIZE];
-char SUBCRIBE_TOPIC[MAX_PACKET_SIZE];// "/v1.6/devices/Device/D1Led/lv"
-char PUBLISH_TOPIC[MAX_PACKET_SIZE]; // "/v1.6/devices/Device1"
+char SUBCRIBE_TOPIC[MAX_PACKET_SIZE];	// "/v1.6/devices/Device/D1Led/lv"
+char PUBLISH_TOPIC[MAX_PACKET_SIZE]; 	// "/v1.6/devices/Device1"
 char sendbuff[MAX_PACKET_SIZE];
 mqtt_broker_handle_t broker;
 int socket_id;

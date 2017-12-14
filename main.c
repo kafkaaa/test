@@ -53,10 +53,12 @@ int main( void )
 	
 	/* Set Rx Continuous */
 	RxWindowSetup(LORA_RX_CONTINUOUS);
-	
+
 	/* Init MQTT */
-	mqtt_init_all();
-	
+	if(WIFI_STATUS == true){
+		mqtt_init_all();
+	}
+
 	/* Init Database */
 	db_init();
 	
@@ -72,14 +74,16 @@ int main( void )
 		/* Must turn off LORA_RX_CONTINUOUS mode */
 		
 		//~ uint8_t payload[7];
-		//~ payload[0] = 110;
-		//~ payload[1] = 84;
-		//~ payload[2] = 55;
-		//~ payload[3] = 1;
-		//~ payload[4] = 2;
+		//~ payload[0] = 1;
+		//~ payload[1] = 170;
+		//~ payload[2] = 187;
+		//~ payload[3] = 204;
+		//~ payload[4] = 221;
 		//~ payload[5] = 0;
 		//~ Send(FRAME_TYPE_DATA_CONFIRMED_DOWN, payload, 6);
-		//~ delay(2);
+		//~ printf("%d\n", a++);
+		//~ printf("---\n");
+		//~ delay(2000);
 		//~ payload[0] = 110;
 		//~ payload[1] = 84;
 		//~ payload[2] = 55;
